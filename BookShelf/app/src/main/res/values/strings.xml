@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">BookShelf</string>
+    <string name="input_placeholder">Search (e.g.: jazz music)</string>
+    <string name="init_screen_text">Type something in the search field to see available books.</string>
+    <string name="no_result_screen_text">No results found. Try searching for another keywords.</string>
+    <string name="error_screen_text">Check network connection or try again later... If you have internet connection maybe the server is down at the moment.</string>
+    <string name="error_message">Error message: </string>
+    <string name="retry">Retry</string>
+    <string name="img_description">This is an image of a book cover.</string>
+    <string name="unknown_author">Unknown</string>
+    <string name="unknown_title">Unknown</string>
+    <string name="book_page_title">Book details</string>
+    <string name="authors">Authors: </string>
+    <string name="publisher">Publisher: </string>
+    <string name="published_on">Published on: </string>
+    <string name="description">"Description: "</string>
+    <string name="page_count">Page count: </string>
+    <string name="read_online">Read online: </string>
+    <string name="buy_it">"Buy it: "</string>
+</resources>
