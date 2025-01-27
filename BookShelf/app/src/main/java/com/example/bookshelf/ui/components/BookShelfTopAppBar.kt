@@ -2,6 +2,7 @@ package com.example.bookshelf.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -31,6 +32,8 @@ import com.example.bookshelf.R
 @Composable
 fun BookShelfTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior,
+    title: String,
+    enableSearch: Boolean,
     searchInput: String,
     onInputChange: (String) -> Unit,
     onInputClear: () -> Unit,
@@ -45,30 +48,32 @@ fun BookShelfTopAppBar(
             scrollBehavior = scrollBehavior,
             title = {
                 Text(
-                    text = stringResource(R.string.app_name),
+                    text = title,
                     style = MaterialTheme.typography.headlineSmall
                 )
             },
             actions = {
-                IconButton(
-                    onClick = { showSearchField = !showSearchField }
-                ) {
-                    if (!showSearchField) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = ""
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Default.KeyboardArrowUp,
-                            contentDescription = ""
-                        )
+                if (enableSearch) {
+                    IconButton(
+                        onClick = { showSearchField = !showSearchField }
+                    ) {
+                        if (!showSearchField) {
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = ""
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.KeyboardArrowUp,
+                                contentDescription = ""
+                            )
+                        }
                     }
                 }
             },
             modifier = modifier
         )
-        AnimatedVisibility(visible = showSearchField) {
+        AnimatedVisibility(visible = showSearchField && enableSearch) {
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()

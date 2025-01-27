@@ -17,4 +17,6 @@
     <string name="page_count">Page count: </string>
     <string name="read_online">Read online: </string>
     <string name="buy_it">"Buy it: "</string>
+    <string name="home_page">Home</string>
+    <string name="saved_page">Saved</string>
 </resources>

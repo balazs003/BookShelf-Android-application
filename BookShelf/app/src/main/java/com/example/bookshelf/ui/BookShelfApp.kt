@@ -1,5 +1,6 @@
 package com.example.bookshelf.ui
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -9,6 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -16,6 +18,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -23,12 +26,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.bookshelf.R
 import com.example.bookshelf.presentation.BookShelfViewModel
 import com.example.bookshelf.ui.components.BookPageTopAppBar
 import com.example.bookshelf.ui.components.BookShelfBottomAppBar
 import com.example.bookshelf.ui.components.BookShelfTopAppBar
 import com.example.bookshelf.ui.screens.BookScreen
 import com.example.bookshelf.ui.screens.HomeScreen
+import com.example.bookshelf.ui.screens.SavedBooksScreen
 import com.example.bookshelf.ui.screens.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,6 +43,7 @@ fun BookShelfApp() {
     val bottomAppBarScrollBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior()
 
     val bookShelfViewModel: BookShelfViewModel = viewModel(factory = BookShelfViewModel.Factory)
+    val selectedPage by bookShelfViewModel.selectedPage.collectAsState()
 
     var searchInput: String by rememberSaveable {
         mutableStateOf("")
@@ -57,6 +63,8 @@ fun BookShelfApp() {
                 topBar = {
                     BookShelfTopAppBar(
                         scrollBehavior = topAppBarScrollBehavior,
+                        title = selectedPage.name,
+                        enableSearch = selectedPage.name == stringResource(R.string.home_page),
                         searchInput = searchInput,
                         onInputChange = {
                             searchInput = it
@@ -69,7 +77,11 @@ fun BookShelfApp() {
                 },
                 bottomBar = {
                     BookShelfBottomAppBar(
-                        scrollBehavior = bottomAppBarScrollBehavior
+                        scrollBehavior = bottomAppBarScrollBehavior,
+                        selectedPage = selectedPage,
+                        onPageSelect = {
+                            bookShelfViewModel.changeSelectedPage(it)
+                        }
                     )
                 }
             ) { innerPadding ->
@@ -78,14 +90,18 @@ fun BookShelfApp() {
                         .fillMaxSize()
                         .padding(innerPadding)
                 ) {
-                    HomeScreen(
-                        bookShelfUiState = bookShelfViewModel.bookShelfUiState,
-                        retryAction = { bookShelfViewModel.getBooksFromNetwork(searchInput) },
-                        onBookClick = {
-                            navController.navigate(Screen.BookScreen.passBookId(it))
-                            bookShelfViewModel.getBookDetailsFromNetwork(it)
-                        }
-                    )
+                    if (selectedPage.name == stringResource(R.string.home_page)) {
+                        HomeScreen(
+                            bookShelfUiState = bookShelfViewModel.bookShelfUiState,
+                            retryAction = { bookShelfViewModel.getBooksFromNetwork(searchInput) },
+                            onBookClick = {
+                                navController.navigate(Screen.BookScreen.passBookId(it))
+                                bookShelfViewModel.getBookDetailsFromNetwork(it)
+                            }
+                        )
+                    } else if (selectedPage.name == stringResource(R.string.saved_page)) {
+                        SavedBooksScreen()
+                    }
                 }
             }
         }

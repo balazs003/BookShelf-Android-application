@@ -9,14 +9,19 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import retrofit2.HttpException
 import com.example.bookshelf.BookShelfApplication
 import com.example.bookshelf.data.BookRepository
 import com.example.bookshelf.model.Book
 import com.example.bookshelf.model.ExtendedBook
+import com.example.bookshelf.ui.screens.Page
+import com.example.bookshelf.ui.screens.Pages
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.io.IOException
 
 sealed interface BookShelfUiState {
@@ -42,8 +47,15 @@ class BookShelfViewModel(
     private var searchJob: Job? = null
     private val defaultQueryString = "jazz music"
 
+    private var _selectedPage = MutableStateFlow(Pages.pageList[0])
+    val selectedPage: StateFlow<Page> = _selectedPage.asStateFlow()
+
     init {
         getBooksFromNetwork(defaultQueryString)
+    }
+
+    fun changeSelectedPage(newPage: Page) {
+        _selectedPage.value = newPage
     }
 
     fun getBooksFromNetwork(queryString: String) {
