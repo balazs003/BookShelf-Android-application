@@ -8,4 +8,5 @@ sealed class Screen(val route: String) {
             const val id = "id"
         }
     }
+    data object SavedBooksScreen: Screen(route = "saved")
 }

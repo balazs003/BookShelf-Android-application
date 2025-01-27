@@ -43,10 +43,10 @@ class BookShelfViewModel(
     private val defaultQueryString = "jazz music"
 
     init {
-        getBooks(defaultQueryString)
+        getBooksFromNetwork(defaultQueryString)
     }
 
-    fun getBooks(queryString: String) {
+    fun getBooksFromNetwork(queryString: String) {
         if (queryString.isEmpty() || queryString.isBlank()) {
             bookShelfUiState = BookShelfUiState.Initial
             searchJob?.cancel()
@@ -68,7 +68,7 @@ class BookShelfViewModel(
         }
     }
 
-    fun getBookDetails(bookId: String) {
+    fun getBookDetailsFromNetwork(bookId: String) {
         viewModelScope.launch {
             bookPageUiState = try {
                 val book = bookRepository.getBookDetails(bookId)
