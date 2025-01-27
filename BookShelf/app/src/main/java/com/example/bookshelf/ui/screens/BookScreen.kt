@@ -1,13 +1,18 @@
 package com.example.bookshelf.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import com.example.bookshelf.presentation.BookPageUiState
 
 @Composable
 fun BookScreen(
     bookPageUiState: BookPageUiState,
-    retryAction: () -> Unit
+    retryAction: () -> Unit,
+    onBackPressed: () -> Unit
 ) {
+    BackHandler(true) {
+        onBackPressed()
+    }
     when (bookPageUiState) {
         is BookPageUiState.Loading ->
             LoadingScreen()

@@ -38,7 +38,7 @@ fun BookShelfBottomAppBar(
                         Icon(imageVector = page.icon, contentDescription = "")
                     },
                     label = {
-                        Text(text = page.name)
+                        Text(text = page.name.replaceFirstChar { it.uppercaseChar() })
                     }
                 )
             }

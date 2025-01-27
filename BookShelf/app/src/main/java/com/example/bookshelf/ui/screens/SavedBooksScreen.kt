@@ -1,5 +1,6 @@
 package com.example.bookshelf.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,7 +10,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun SavedBooksScreen() {
+fun SavedBooksScreen(
+    onBackPressed: () -> Unit
+) {
+    BackHandler(true) {
+        onBackPressed()
+    }
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,

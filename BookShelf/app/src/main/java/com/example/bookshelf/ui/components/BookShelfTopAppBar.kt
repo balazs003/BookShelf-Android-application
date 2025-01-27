@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
@@ -33,6 +34,8 @@ import com.example.bookshelf.R
 fun BookShelfTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior,
     title: String,
+    enableNavigateBack: Boolean,
+    onNavigateBack: () -> Unit,
     enableSearch: Boolean,
     searchInput: String,
     onInputChange: (String) -> Unit,
@@ -51,6 +54,15 @@ fun BookShelfTopAppBar(
                     text = title,
                     style = MaterialTheme.typography.headlineSmall
                 )
+            },
+            navigationIcon = {
+                if(enableNavigateBack) {
+                    IconButton(
+                        onClick = onNavigateBack
+                    ) {
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "")
+                    }
+                }
             },
             actions = {
                 if (enableSearch) {

@@ -2,6 +2,7 @@ package com.example.bookshelf.presentation
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -11,6 +12,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.bookshelf.BookShelfApplication
 import com.example.bookshelf.data.BookRepository
+import com.example.bookshelf.data.MainScreenUiState
 import com.example.bookshelf.model.Book
 import com.example.bookshelf.model.ExtendedBook
 import com.example.bookshelf.ui.screens.Page
@@ -20,6 +22,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -32,30 +35,17 @@ sealed interface BookShelfUiState {
     data object Initial: BookShelfUiState
 }
 
-sealed interface BookPageUiState {
-    data class Success(val book: ExtendedBook): BookPageUiState
-    data class Error(val errorMessage: String): BookPageUiState
-    data object Loading: BookPageUiState
-}
-
 class BookShelfViewModel(
     private val bookRepository: BookRepository
 ): ViewModel() {
 
     var bookShelfUiState: BookShelfUiState by mutableStateOf(BookShelfUiState.Loading)
-    var bookPageUiState: BookPageUiState by mutableStateOf(BookPageUiState.Loading)
+
     private var searchJob: Job? = null
     private val defaultQueryString = "jazz music"
 
-    private var _selectedPage = MutableStateFlow(Pages.pageList[0])
-    val selectedPage: StateFlow<Page> = _selectedPage.asStateFlow()
-
     init {
         getBooksFromNetwork(defaultQueryString)
-    }
-
-    fun changeSelectedPage(newPage: Page) {
-        _selectedPage.value = newPage
     }
 
     fun getBooksFromNetwork(queryString: String) {
@@ -76,29 +66,6 @@ class BookShelfViewModel(
                 } catch (e: HttpException) {
                     bookShelfUiState = BookShelfUiState.Error(e.message())
                 }
-            }
-        }
-    }
-
-    fun getBookDetailsFromNetwork(bookId: String) {
-        viewModelScope.launch {
-            bookPageUiState = try {
-                val book = bookRepository.getBookDetails(bookId)
-                BookPageUiState.Success(book)
-            } catch (e: IOException) {
-                BookPageUiState.Error(e.message ?: "IOException")
-            } catch (e: HttpException) {
-                BookPageUiState.Error(e.message())
-            }
-        }
-    }
-
-    companion object {
-        val Factory: ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application: BookShelfApplication = (this[APPLICATION_KEY]) as BookShelfApplication
-                val networkBookRepository = application.container.bookRepository
-                BookShelfViewModel(networkBookRepository)
             }
         }
     }

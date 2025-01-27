@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class Screen(val route: String) {
     data object HomeScreen: Screen(route = "home")
+    data object SavedScreen: Screen(route = "saved")
     data object BookScreen: Screen(route = "book/{id}") {
         fun passBookId(bookId: String) = "book/$bookId"
         object Args {
@@ -17,12 +18,12 @@ sealed class Screen(val route: String) {
 
 object Pages {
     val pageList = listOf(
-        Page(name = "Home", icon = Icons.Filled.Home),
-        Page(name = "Saved", icon = Icons.Filled.Star)
+        Page(name = Screen.HomeScreen.route, icon = Icons.Filled.Home),
+        Page(name = Screen.SavedScreen.route, icon = Icons.Filled.Star)
     )
 }
 
 data class Page(
     val name: String,
-    val icon: ImageVector
+    val icon: ImageVector = Icons.Default.Home
 )
