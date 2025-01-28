@@ -45,13 +45,15 @@ class OnlineBookShelfViewModel(
             delay(500)
             try {
                 bookShelfUiState = BookShelfUiState.Loading
-                val books = onlineBookRepository.getSearchResults(modifiedQueryString)
-                bookShelfUiState = if (modifiedQueryString.isEmpty() || modifiedQueryString.isBlank()) {
-                    BookShelfUiState.Initial
-                } else if (books.isNotEmpty()) {
-                    BookShelfUiState.Success(books)
+                if (!isQueryValid(modifiedQueryString)) {
+                    bookShelfUiState = BookShelfUiState.Initial
                 } else {
-                    BookShelfUiState.NoResult
+                    val books = onlineBookRepository.getSearchResults(modifiedQueryString)
+                    bookShelfUiState = if (books.isNotEmpty()) {
+                        BookShelfUiState.Success(books)
+                    } else {
+                        BookShelfUiState.NoResult
+                    }
                 }
             } catch (e: IOException) {
                 bookShelfUiState = BookShelfUiState.Error(e.message ?: "IOException")
@@ -59,5 +61,9 @@ class OnlineBookShelfViewModel(
                 bookShelfUiState = BookShelfUiState.Error(e.message ?: "HttpException")
             }
         }
+    }
+
+    private fun isQueryValid(queryString: String): Boolean {
+        return queryString.isNotEmpty() && queryString.isNotBlank()
     }
 }

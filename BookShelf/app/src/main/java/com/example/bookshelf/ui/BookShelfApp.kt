@@ -117,6 +117,7 @@ fun BookShelfApp() {
                 },
                 onInputClear = {
                     searchInput = ""
+                    onlineBookShelfViewModel.getBooksFromNetwork(searchInput)
                 }
             )
         },
