@@ -1,5 +1,6 @@
 package com.example.bookshelf.ui
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,12 +13,19 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -47,6 +55,7 @@ import com.example.bookshelf.ui.screens.Page
 import com.example.bookshelf.ui.screens.Pages
 import com.example.bookshelf.ui.screens.SavedBooksScreen
 import com.example.bookshelf.ui.screens.Screen
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,6 +63,9 @@ fun BookShelfApp() {
 
     val topAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val bottomAppBarScrollBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior()
+
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     val onlineBookShelfViewModel: OnlineBookShelfViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val offlineBookShelfViewModel: OfflineBookShelfViewModel = viewModel(factory = AppViewModelProvider.Factory)
@@ -74,6 +86,7 @@ fun BookShelfApp() {
         modifier = Modifier
             .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
             .nestedScroll(bottomAppBarScrollBehavior.nestedScrollConnection),
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         topBar = {
             BookShelfTopAppBar(
                 scrollBehavior = topAppBarScrollBehavior,
@@ -110,8 +123,23 @@ fun BookShelfApp() {
                     onClick = {
                         if (selectedBookState.isSaved) {
                             selectedBookState.book?.let { bookPageViewModel.deleteBook(it) }
+                            scope.launch {
+                                showSnackBar(
+                                    snackbarHostState = snackbarHostState,
+                                    message = "Book deleted!",
+                                    showAction = false
+                                )
+                            }
                         } else {
                             selectedBookState.book?.let { bookPageViewModel.saveBook(it) }
+                            scope.launch {
+                                showSnackBar(
+                                    snackbarHostState = snackbarHostState,
+                                    message = "Book saved!",
+                                    showAction = true,
+                                    navController = navController
+                                )
+                            }
                         }
                     },
                     containerColor = if (selectedBookState.isSaved) Color.Red else Color.Green
@@ -198,4 +226,26 @@ private fun handleBackPressed(
     val page = Pages.pageList.find { it.name == route }
     navController.navigateUp()
     page?.let { mainScreenViewModel.changeSelectedPage(page) }
+}
+
+private suspend fun showSnackBar(
+    snackbarHostState: SnackbarHostState,
+    message: String,
+    showAction: Boolean,
+    navController: NavHostController? = null
+) {
+    val result = snackbarHostState
+        .showSnackbar(
+            message = message,
+            actionLabel = if (showAction) "View" else "",
+            duration = SnackbarDuration.Short
+        )
+    when (result) {
+        SnackbarResult.ActionPerformed -> {
+            if (showAction) {
+                navController?.navigate(Screen.SavedScreen.route)
+            }
+        }
+        SnackbarResult.Dismissed -> {}
+    }
 }
