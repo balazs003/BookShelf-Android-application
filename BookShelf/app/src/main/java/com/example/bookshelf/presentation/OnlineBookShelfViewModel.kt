@@ -1,5 +1,6 @@
 package com.example.bookshelf.presentation
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -30,28 +31,32 @@ class OnlineBookShelfViewModel(
     private var searchJob: Job? = null
     private val defaultQueryString = "jazz music"
 
+    var isFirstTry by mutableStateOf(true)
+
     init {
         getBooksFromNetwork(defaultQueryString)
     }
 
     fun getBooksFromNetwork(queryString: String) {
-        if (queryString.isEmpty() || queryString.isBlank()) {
-            bookShelfUiState = BookShelfUiState.Initial
-            searchJob?.cancel()
-        } else {
-            searchJob?.cancel()
-            searchJob = viewModelScope.launch {
-                delay(500)
-                try {
-                    bookShelfUiState = BookShelfUiState.Loading
-                    val books = onlineBookRepository.getSearchResults(queryString)
-                    bookShelfUiState = if (books.isNotEmpty()) BookShelfUiState.Success(books)
-                                    else BookShelfUiState.NoResult
-                } catch (e: IOException) {
-                    bookShelfUiState = BookShelfUiState.Error(e.message ?: "IOException")
-                } catch (e: HttpException) {
-                    bookShelfUiState = BookShelfUiState.Error(e.message())
+        //when error on launch, try again with defaultQueryString until the user modifies the query
+        val modifiedQueryString = if (isFirstTry) defaultQueryString else queryString
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(500)
+            try {
+                bookShelfUiState = BookShelfUiState.Loading
+                val books = onlineBookRepository.getSearchResults(modifiedQueryString)
+                bookShelfUiState = if (modifiedQueryString.isEmpty() || modifiedQueryString.isBlank()) {
+                    BookShelfUiState.Initial
+                } else if (books.isNotEmpty()) {
+                    BookShelfUiState.Success(books)
+                } else {
+                    BookShelfUiState.NoResult
                 }
+            } catch (e: IOException) {
+                bookShelfUiState = BookShelfUiState.Error(e.message ?: "IOException")
+            } catch (e: HttpException) {
+                bookShelfUiState = BookShelfUiState.Error(e.message ?: "HttpException")
             }
         }
     }
