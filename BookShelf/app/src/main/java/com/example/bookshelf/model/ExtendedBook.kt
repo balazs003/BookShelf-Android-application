@@ -17,15 +17,9 @@ data class ExtendedVolumeInfo(
     val publisher: String? = null,
     val publishedDate: String? = null,
     val description: String? = null,
-    val pageCount: Int? = null,
-    val printedPageCount: Int? = null,
-    val categories: List<String>? = null,
-    val maturityRating: String? = null,
     val imageLinks: ExtendedImageLinks? = null,
     val language: String? = null,
-    val previewLink: String? = null,
-    val infoLink: String? = null,
-    val canonicalVolumeLink: String? = null
+    val pageCount: Int? = null
 )
 
 @Serializable
@@ -50,29 +44,10 @@ data class ExtendedImageLinks(
 
 @Serializable
 data class SaleInfo(
-    val country: String? = null,
-    val saleability: String? = null,
-    val isEbook: Boolean? = null,
-    val listPrice: Price? = null,
-    val retailPrice: Price? = null,
     val buyLink: String? = null
 )
 
 @Serializable
-data class Price(
-    val amount: Double? = null,
-    val currencyCode: String? = null
-)
-
-@Serializable
 data class AccessInfo(
-    val epub: Format? = null,
-    val pdf: Format? = null,
     val webReaderLink: String? = null
-)
-
-@Serializable
-data class Format(
-    val isAvailable: Boolean? = null,
-    val acsTokenLink: String? = null
 )

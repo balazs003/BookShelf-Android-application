@@ -28,7 +28,6 @@ import com.example.bookshelf.model.AccessInfo
 import com.example.bookshelf.model.ExtendedBook
 import com.example.bookshelf.model.ExtendedVolumeInfo
 import com.example.bookshelf.model.SaleInfo
-import com.example.bookshelf.model.VolumeInfo
 import com.example.bookshelf.ui.components.DetailsText
 
 @Composable
@@ -69,6 +68,13 @@ fun BookPageResultScreen(book: ExtendedBook) {
             DetailsText(
                 title = stringResource(R.string.authors),
                 value = it.joinToString(", ")
+            )
+        }
+
+        book.volumeInfo.language?.let {
+            DetailsText(
+                title = stringResource(R.string.language),
+                value = it
             )
         }
 

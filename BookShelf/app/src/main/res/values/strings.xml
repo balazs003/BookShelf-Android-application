@@ -19,4 +19,5 @@
     <string name="buy_it">"Buy it: "</string>
     <string name="home_page">Home</string>
     <string name="saved_page">Saved</string>
+    <string name="language">Language:</string>
 </resources>
