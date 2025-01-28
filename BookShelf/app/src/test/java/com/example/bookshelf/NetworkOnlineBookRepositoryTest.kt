@@ -1,6 +1,6 @@
 package com.example.bookshelf
 
-import com.example.bookshelf.data.NetworkBookRepository
+import com.example.bookshelf.data.NetworkOnlineBookRepository
 import com.example.bookshelf.fake.FakeApiService
 import com.example.bookshelf.fake.FakeDataSource
 import com.example.bookshelf.network.GoogleBooksApiService
@@ -8,11 +8,11 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class NetworkBookRepositoryTest {
+class NetworkOnlineBookRepositoryTest {
 
     private val service: GoogleBooksApiService = FakeApiService()
     private val networkRepository =
-        NetworkBookRepository(service)
+        NetworkOnlineBookRepository(service)
 
     @Test
     fun testNetworkBookRepositoryResponseIsValid() = runTest {

@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.bookshelf.data.BookRepository
+import com.example.bookshelf.data.OnlineBookRepository
 import com.example.bookshelf.model.ExtendedBook
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -18,14 +18,14 @@ sealed interface BookPageUiState {
 }
 
 class BookPageViewModel(
-    private val bookRepository: BookRepository
+    private val onlineBookRepository: OnlineBookRepository
 ): ViewModel() {
     var bookPageUiState: BookPageUiState by mutableStateOf(BookPageUiState.Loading)
 
     fun getBookDetailsFromNetwork(bookId: String) {
         viewModelScope.launch {
             bookPageUiState = try {
-                val book = bookRepository.getBookDetails(bookId)
+                val book = onlineBookRepository.getBookDetails(bookId)
                 BookPageUiState.Success(book)
             } catch (e: IOException) {
                 BookPageUiState.Error(e.message ?: "IOException")

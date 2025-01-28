@@ -5,14 +5,14 @@ import com.example.bookshelf.model.Book
 import com.example.bookshelf.model.ExtendedBook
 import com.example.bookshelf.network.GoogleBooksApiService
 
-interface BookRepository {
+interface OnlineBookRepository {
     suspend fun getSearchResults(queryString: String): List<Book>
     suspend fun getBookDetails(bookId: String): ExtendedBook
 }
 
-class NetworkBookRepository(
+class NetworkOnlineBookRepository(
     private val apiService: GoogleBooksApiService
-): BookRepository {
+): OnlineBookRepository {
     /**
      * Returns the list of books with formatted image url-s
      **/

@@ -9,12 +9,12 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             val application: BookShelfApplication = (this[APPLICATION_KEY]) as BookShelfApplication
-            val networkBookRepository = application.container.bookRepository
+            val networkBookRepository = application.container.onlineBookRepository
             BookShelfViewModel(networkBookRepository)
         }
         initializer {
             val application: BookShelfApplication = (this[APPLICATION_KEY]) as BookShelfApplication
-            val networkBookRepository = application.container.bookRepository
+            val networkBookRepository = application.container.onlineBookRepository
             BookPageViewModel(networkBookRepository)
         }
         initializer {

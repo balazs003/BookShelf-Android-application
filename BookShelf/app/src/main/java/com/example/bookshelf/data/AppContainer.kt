@@ -7,7 +7,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Retrofit
 
 interface AppContainer {
-    val bookRepository: BookRepository
+    val onlineBookRepository: OnlineBookRepository
 }
 
 class DefaultAppContainer: AppContainer {
@@ -24,7 +24,7 @@ class DefaultAppContainer: AppContainer {
         retrofit.create(GoogleBooksApiService::class.java)
     }
 
-    override val bookRepository: BookRepository by lazy {
-        NetworkBookRepository(retrofitService)
+    override val onlineBookRepository: OnlineBookRepository by lazy {
+        NetworkOnlineBookRepository(retrofitService)
     }
 }

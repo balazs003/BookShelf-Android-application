@@ -1,12 +1,20 @@
 package com.example.bookshelf.model
 
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import kotlinx.serialization.Serializable
 
+@Entity(tableName = "books")
 @Serializable
 data class ExtendedBook(
+    @PrimaryKey
     val id: String,
+    @Embedded
     val volumeInfo: ExtendedVolumeInfo,
+    @Embedded
     val saleInfo: SaleInfo? = null,
+    @Embedded
     val accessInfo: AccessInfo? = null
 )
 
@@ -17,6 +25,7 @@ data class ExtendedVolumeInfo(
     val publisher: String? = null,
     val publishedDate: String? = null,
     val description: String? = null,
+    @Embedded
     val imageLinks: ExtendedImageLinks? = null,
     val language: String? = null,
     val pageCount: Int? = null
