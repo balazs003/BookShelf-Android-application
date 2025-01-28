@@ -1,5 +1,6 @@
 package com.example.bookshelf.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -20,6 +21,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -70,8 +72,7 @@ fun BookShelfApp() {
                 title = mainScreenUiState.selectedPage.name.replaceFirstChar { it.uppercaseChar() },
                 enableNavigateBack = mainScreenViewModel.canNavigateBack(backStackEntry?.destination?.route),
                 onNavigateBack = {
-                    navController.navigateUp()
-                    mainScreenViewModel.changeSelectedPage(Pages.pageList[0])
+                    handleBackPressed(mainScreenViewModel, navController)
                 },
                 enableSearch = mainScreenUiState.isSearchEnabled,
                 searchInput = searchInput,
@@ -119,7 +120,8 @@ fun BookShelfApp() {
                 composable(route = Screen.SavedScreen.route) {
                     SavedBooksScreen(
                         onBackPressed = {
-                            handleBackPressed(mainScreenViewModel, navController)
+                            mainScreenViewModel.changeSelectedPage(Pages.homePage)
+                            navController.popBackStack(Screen.HomeScreen.route, false)
                         }
                     )
                 }
@@ -146,7 +148,12 @@ fun BookShelfApp() {
     }
 }
 
-private fun handleBackPressed(mainScreenViewModel: MainScreenViewModel, navController: NavHostController) {
-    mainScreenViewModel.changeSelectedPage(Pages.pageList[0])
-    navController.popBackStack(Screen.HomeScreen.route, false)
+private fun handleBackPressed(
+    mainScreenViewModel: MainScreenViewModel,
+    navController: NavHostController
+) {
+    val route = navController.previousBackStackEntry?.destination?.route
+    val page = Pages.pageList.find { it.name == route }
+    navController.navigateUp()
+    page?.let { mainScreenViewModel.changeSelectedPage(page) }
 }

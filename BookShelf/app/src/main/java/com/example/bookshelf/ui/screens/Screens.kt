@@ -17,9 +17,11 @@ sealed class Screen(val route: String) {
 }
 
 object Pages {
+    val homePage = Page(name = Screen.HomeScreen.route, icon = Icons.Filled.Home)
+    val savedPage = Page(name = Screen.SavedScreen.route, icon = Icons.Filled.Star)
     val pageList = listOf(
-        Page(name = Screen.HomeScreen.route, icon = Icons.Filled.Home),
-        Page(name = Screen.SavedScreen.route, icon = Icons.Filled.Star)
+        homePage,
+        savedPage
     )
 }
 
