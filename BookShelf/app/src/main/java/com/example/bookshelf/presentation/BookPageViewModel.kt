@@ -7,7 +7,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bookshelf.data.OfflineBookRepository
 import com.example.bookshelf.data.OnlineBookRepository
+import com.example.bookshelf.data.SelectedBookState
 import com.example.bookshelf.model.ExtendedBook
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
@@ -23,11 +28,14 @@ class BookPageViewModel(
     private val offlineBookRepository: OfflineBookRepository
 ): ViewModel() {
     var bookPageUiState: BookPageUiState by mutableStateOf(BookPageUiState.Loading)
+    var _selectedBookState = MutableStateFlow(SelectedBookState())
+    val selectedBookState: StateFlow<SelectedBookState> = _selectedBookState.asStateFlow()
 
     fun getBookDetailsFromNetwork(bookId: String) {
         viewModelScope.launch {
             bookPageUiState = try {
                 val book = onlineBookRepository.getBookDetails(bookId)
+                updateSelectedBookState(book)
                 BookPageUiState.Success(book)
             } catch (e: IOException) {
                 BookPageUiState.Error(e.message ?: "IOException")
@@ -38,7 +46,21 @@ class BookPageViewModel(
     }
 
     fun getBookDetailsFromStorage(bookId: String) {
-        val book = offlineBookRepository.getStoredBookById(bookId)
-        bookPageUiState = BookPageUiState.Success(book)
+        viewModelScope.launch {
+            val book = offlineBookRepository.getStoredBookById(bookId)
+            bookPageUiState = BookPageUiState.Success(book)
+        }
+    }
+
+    private fun updateSelectedBookState(
+        book: ExtendedBook? = _selectedBookState.value.book,
+        isSaved: Boolean = _selectedBookState.value.isSaved
+    ) {
+        _selectedBookState.update { currentState ->
+            currentState.copy(
+                book = book,
+                isSaved = isSaved
+            )
+        }
     }
 }

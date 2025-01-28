@@ -13,9 +13,6 @@ class OfflineBookShelfViewModel(
     fun getAllStoredBooks(): Flow<List<ExtendedBook>> =
         offlineBookRepository.getAllStoredBooksStream()
 
-    fun getStoredBookById(booId: String): ExtendedBook =
-        offlineBookRepository.getStoredBookById(booId)
-
     fun saveBook(book: ExtendedBook) {
         viewModelScope.launch {
             offlineBookRepository.saveBook(book)

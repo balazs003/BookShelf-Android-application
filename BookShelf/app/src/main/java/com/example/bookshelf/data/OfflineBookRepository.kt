@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface OfflineBookRepository {
     fun getAllStoredBooksStream(): Flow<List<ExtendedBook>>
-    fun getStoredBookById(bookId: String): ExtendedBook
+    suspend fun getStoredBookById(bookId: String): ExtendedBook
     suspend fun saveBook(book: ExtendedBook)
     suspend fun deleteBook(book: ExtendedBook)
 }
@@ -17,7 +17,7 @@ class DbOfflineBookRepository(
     override fun getAllStoredBooksStream(): Flow<List<ExtendedBook>> =
         bookDao.getAllBooks()
 
-    override fun getStoredBookById(bookId: String): ExtendedBook =
+    override suspend fun getStoredBookById(bookId: String): ExtendedBook =
         bookDao.getBookById(bookId)
 
     override suspend fun saveBook(book: ExtendedBook) =

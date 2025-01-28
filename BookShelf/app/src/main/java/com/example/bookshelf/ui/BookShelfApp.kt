@@ -2,8 +2,12 @@ package com.example.bookshelf.ui
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBarDefaults
@@ -26,6 +30,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.bookshelf.R
 import com.example.bookshelf.presentation.AppViewModelProvider
+import com.example.bookshelf.presentation.BookPageUiState
 import com.example.bookshelf.presentation.BookPageViewModel
 import com.example.bookshelf.presentation.OnlineBookShelfViewModel
 import com.example.bookshelf.presentation.MainScreenViewModel
@@ -50,7 +55,9 @@ fun BookShelfApp() {
     val offlineBookShelfViewModel: OfflineBookShelfViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val bookPageViewModel: BookPageViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val mainScreenViewModel: MainScreenViewModel = viewModel(factory = AppViewModelProvider.Factory)
+
     val mainScreenUiState by mainScreenViewModel.mainScreenUiState.collectAsState()
+    val selectedBookState by bookPageViewModel.selectedBookState.collectAsState()
 
     var searchInput: String by rememberSaveable {
         mutableStateOf("")
@@ -91,6 +98,21 @@ fun BookShelfApp() {
                     mainScreenViewModel.changeSelectedPage(it)
                 }
             )
+        },
+        floatingActionButton = {
+            val route = backStackEntry?.destination?.route
+            if (route == Screen.BookScreen.route) {
+                FloatingActionButton(
+                    onClick = {
+                        selectedBookState.book?.let { offlineBookShelfViewModel.saveBook(it) }
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = ""
+                    )
+                }
+            }
         }
     ) { innerPadding ->
         Surface(

@@ -14,7 +14,7 @@ interface BookDao {
     fun getAllBooks(): Flow<List<ExtendedBook>>
 
     @Query("select * from books where id like :id")
-    fun getBookById(id: String): ExtendedBook
+    suspend fun getBookById(id: String): ExtendedBook
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertBook(book: ExtendedBook)
