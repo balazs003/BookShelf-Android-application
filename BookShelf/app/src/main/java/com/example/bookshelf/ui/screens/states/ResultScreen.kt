@@ -9,10 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.bookshelf.model.Book
+import com.example.bookshelf.model.ExtendedBook
 import com.example.bookshelf.ui.components.BookCard
 
 @Composable
-fun HomePageResultScreen(
+fun ResultScreen(
     bookList: List<Book>,
     modifier: Modifier = Modifier,
     onBookClick: (String) -> Unit

@@ -21,7 +21,7 @@ sealed interface BookShelfUiState {
     data object Initial: BookShelfUiState
 }
 
-class BookShelfViewModel(
+class OnlineBookShelfViewModel(
     private val onlineBookRepository: OnlineBookRepository
 ): ViewModel() {
 

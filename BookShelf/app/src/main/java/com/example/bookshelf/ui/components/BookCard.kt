@@ -21,6 +21,7 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.bookshelf.R
 import com.example.bookshelf.model.Book
+import com.example.bookshelf.model.ExtendedBook
 
 @Composable
 fun BookCard(

@@ -27,8 +27,9 @@ import androidx.navigation.navArgument
 import com.example.bookshelf.R
 import com.example.bookshelf.presentation.AppViewModelProvider
 import com.example.bookshelf.presentation.BookPageViewModel
-import com.example.bookshelf.presentation.BookShelfViewModel
+import com.example.bookshelf.presentation.OnlineBookShelfViewModel
 import com.example.bookshelf.presentation.MainScreenViewModel
+import com.example.bookshelf.presentation.OfflineBookShelfViewModel
 import com.example.bookshelf.ui.components.BookShelfBottomAppBar
 import com.example.bookshelf.ui.components.BookShelfTopAppBar
 import com.example.bookshelf.ui.screens.BookScreen
@@ -45,7 +46,8 @@ fun BookShelfApp() {
     val topAppBarScrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val bottomAppBarScrollBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior()
 
-    val bookShelfViewModel: BookShelfViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val onlineBookShelfViewModel: OnlineBookShelfViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val offlineBookShelfViewModel: OfflineBookShelfViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val bookPageViewModel: BookPageViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val mainScreenViewModel: MainScreenViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val mainScreenUiState by mainScreenViewModel.mainScreenUiState.collectAsState()
@@ -73,7 +75,7 @@ fun BookShelfApp() {
                 searchInput = searchInput,
                 onInputChange = {
                     searchInput = it
-                    bookShelfViewModel.getBooksFromNetwork(searchInput)
+                    onlineBookShelfViewModel.getBooksFromNetwork(searchInput)
                 },
                 onInputClear = {
                     searchInput = ""
@@ -103,8 +105,8 @@ fun BookShelfApp() {
                 composable(Screen.HomeScreen.route) {
                     val title = stringResource(R.string.book_page_title)
                     HomeScreen(
-                        bookShelfUiState = bookShelfViewModel.bookShelfUiState,
-                        retryAction = { bookShelfViewModel.getBooksFromNetwork(searchInput) },
+                        bookShelfUiState = onlineBookShelfViewModel.bookShelfUiState,
+                        retryAction = { onlineBookShelfViewModel.getBooksFromNetwork(searchInput) },
                         onBookClick = {
                             navController.navigate(Screen.BookScreen.passBookId(it))
                             bookPageViewModel.getBookDetailsFromNetwork(it)
@@ -113,7 +115,14 @@ fun BookShelfApp() {
                     )
                 }
                 composable(route = Screen.SavedScreen.route) {
+                    val title = stringResource(R.string.book_page_title)
                     SavedBooksScreen(
+                        viewModel = offlineBookShelfViewModel,
+                        onBookClick = {
+                            navController.navigate(Screen.BookScreen.passBookId(it))
+                            bookPageViewModel.getBookDetailsFromStorage(it)
+                            mainScreenViewModel.changeSelectedPage(Page(name = title))
+                        },
                         onBackPressed = {
                             mainScreenViewModel.changeSelectedPage(Pages.homePage)
                             navController.popBackStack(Screen.HomeScreen.route, false)

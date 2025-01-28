@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bookshelf.data.OfflineBookRepository
 import com.example.bookshelf.data.OnlineBookRepository
 import com.example.bookshelf.model.ExtendedBook
 import kotlinx.coroutines.launch
@@ -18,7 +19,8 @@ sealed interface BookPageUiState {
 }
 
 class BookPageViewModel(
-    private val onlineBookRepository: OnlineBookRepository
+    private val onlineBookRepository: OnlineBookRepository,
+    private val offlineBookRepository: OfflineBookRepository
 ): ViewModel() {
     var bookPageUiState: BookPageUiState by mutableStateOf(BookPageUiState.Loading)
 
@@ -33,5 +35,10 @@ class BookPageViewModel(
                 BookPageUiState.Error(e.message())
             }
         }
+    }
+
+    fun getBookDetailsFromStorage(bookId: String) {
+        val book = offlineBookRepository.getStoredBookById(bookId)
+        bookPageUiState = BookPageUiState.Success(book)
     }
 }

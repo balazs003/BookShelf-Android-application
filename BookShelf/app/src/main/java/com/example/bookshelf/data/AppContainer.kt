@@ -1,5 +1,7 @@
 package com.example.bookshelf.data
 
+import android.content.Context
+import com.example.bookshelf.data.database.BookDatabase
 import com.example.bookshelf.network.GoogleBooksApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
@@ -8,9 +10,12 @@ import retrofit2.Retrofit
 
 interface AppContainer {
     val onlineBookRepository: OnlineBookRepository
+    val offlineBookRepository: OfflineBookRepository
 }
 
-class DefaultAppContainer: AppContainer {
+class DefaultAppContainer(
+    private val context: Context
+): AppContainer {
     private val baseUrl: String = "https://www.googleapis.com/books/v1/"
 
     private val json = Json { ignoreUnknownKeys = true }
@@ -26,5 +31,9 @@ class DefaultAppContainer: AppContainer {
 
     override val onlineBookRepository: OnlineBookRepository by lazy {
         NetworkOnlineBookRepository(retrofitService)
+    }
+
+    override val offlineBookRepository: OfflineBookRepository by lazy {
+        DbOfflineBookRepository(BookDatabase.getBookDatabase(context).getDao())
     }
 }

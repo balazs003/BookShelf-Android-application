@@ -10,12 +10,18 @@ object AppViewModelProvider {
         initializer {
             val application: BookShelfApplication = (this[APPLICATION_KEY]) as BookShelfApplication
             val networkBookRepository = application.container.onlineBookRepository
-            BookShelfViewModel(networkBookRepository)
+            OnlineBookShelfViewModel(networkBookRepository)
+        }
+        initializer {
+            val application: BookShelfApplication = (this[APPLICATION_KEY]) as BookShelfApplication
+            val databaseBookRepository = application.container.offlineBookRepository
+            OfflineBookShelfViewModel(databaseBookRepository)
         }
         initializer {
             val application: BookShelfApplication = (this[APPLICATION_KEY]) as BookShelfApplication
             val networkBookRepository = application.container.onlineBookRepository
-            BookPageViewModel(networkBookRepository)
+            val databaseBookRepository = application.container.offlineBookRepository
+            BookPageViewModel(networkBookRepository, databaseBookRepository)
         }
         initializer {
             MainScreenViewModel()

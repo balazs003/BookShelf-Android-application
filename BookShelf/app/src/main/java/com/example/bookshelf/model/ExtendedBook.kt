@@ -16,7 +16,20 @@ data class ExtendedBook(
     val saleInfo: SaleInfo? = null,
     @Embedded
     val accessInfo: AccessInfo? = null
-)
+) {
+    fun convertToBook(): Book {
+        return Book(
+            id = id,
+            volumeInfo = VolumeInfo(
+                title = volumeInfo.title,
+                authors = volumeInfo.authors,
+                imageLinks = ImageLinks(
+                    thumbnail = volumeInfo.imageLinks?.thumbnail
+                )
+            )
+        )
+    }
+}
 
 @Serializable
 data class ExtendedVolumeInfo(
