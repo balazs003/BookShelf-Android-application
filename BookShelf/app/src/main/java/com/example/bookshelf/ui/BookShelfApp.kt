@@ -1,26 +1,32 @@
 package com.example.bookshelf.ui
 
-import android.content.Context
-import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
-import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,10 +34,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -42,11 +50,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.bookshelf.R
 import com.example.bookshelf.presentation.AppViewModelProvider
-import com.example.bookshelf.presentation.BookPageUiState
 import com.example.bookshelf.presentation.BookPageViewModel
-import com.example.bookshelf.presentation.OnlineBookShelfViewModel
 import com.example.bookshelf.presentation.MainScreenViewModel
 import com.example.bookshelf.presentation.OfflineBookShelfViewModel
+import com.example.bookshelf.presentation.OnlineBookShelfViewModel
 import com.example.bookshelf.ui.components.BookShelfBottomAppBar
 import com.example.bookshelf.ui.components.BookShelfTopAppBar
 import com.example.bookshelf.ui.screens.BookScreen
@@ -55,6 +62,7 @@ import com.example.bookshelf.ui.screens.Page
 import com.example.bookshelf.ui.screens.Pages
 import com.example.bookshelf.ui.screens.SavedBooksScreen
 import com.example.bookshelf.ui.screens.Screen
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -81,6 +89,13 @@ fun BookShelfApp() {
 
     val navController: NavHostController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
+
+    val scrollState = rememberScrollState()
+    var isAtTop by remember { mutableStateOf(true) }
+
+    LaunchedEffect(scrollState.canScrollBackward) {
+        isAtTop = !scrollState.canScrollBackward
+    }
 
     Scaffold(
         modifier = Modifier
@@ -142,18 +157,30 @@ fun BookShelfApp() {
                             }
                         }
                     },
-                    containerColor = if (selectedBookState.isSaved) Color.Red else Color.Green
+                    contentColor = MaterialTheme.colorScheme.onSecondaryContainer
                 ) {
-                    if (selectedBookState.isSaved) {
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = ""
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Default.Star,
-                            contentDescription = ""
-                        )
+                    Row (
+                        modifier = Modifier.padding(horizontal = 10.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (selectedBookState.isSaved) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = ""
+                            )
+                            AnimatedVisibility (visible = isAtTop) {
+                                Text(text = "Delete book", modifier = Modifier.padding(start = 10.dp))
+                            }
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.Star,
+                                contentDescription = ""
+                            )
+                            AnimatedVisibility (visible = isAtTop) {
+                                Text(text = "Save book", modifier = Modifier.padding(start = 10.dp))
+                            }
+                        }
                     }
                 }
             }
@@ -174,9 +201,7 @@ fun BookShelfApp() {
                         bookShelfUiState = onlineBookShelfViewModel.bookShelfUiState,
                         retryAction = { onlineBookShelfViewModel.getBooksFromNetwork(searchInput) },
                         onBookClick = {
-                            navController.navigate(Screen.BookScreen.passBookId(it))
-                            bookPageViewModel.getBookDetailsFromNetwork(it)
-                            mainScreenViewModel.changeSelectedPage(Page(name = title))
+                            onBookClick(needsNetwork = true, navController, bookPageViewModel, mainScreenViewModel, scope, scrollState, title, bookId = it)
                         }
                     )
                 }
@@ -185,9 +210,7 @@ fun BookShelfApp() {
                     SavedBooksScreen(
                         viewModel = offlineBookShelfViewModel,
                         onBookClick = {
-                            navController.navigate(Screen.BookScreen.passBookId(it))
-                            bookPageViewModel.getBookDetailsFromStorage(it)
-                            mainScreenViewModel.changeSelectedPage(Page(name = title))
+                            onBookClick(needsNetwork = false, navController, bookPageViewModel, mainScreenViewModel, scope, scrollState, title, bookId = it)
                         },
                         onBackPressed = {
                             mainScreenViewModel.changeSelectedPage(Pages.homePage)
@@ -207,6 +230,7 @@ fun BookShelfApp() {
                     val bookId = backStackEntry.arguments?.getString(Screen.BookScreen.Args.id)!!
                     BookScreen(
                         bookPageUiState = bookPageViewModel.bookPageUiState,
+                        scrollState = scrollState,
                         retryAction = { bookPageViewModel.getBookDetailsFromNetwork(bookId) },
                         onBackPressed = {
                             handleBackPressed(mainScreenViewModel, navController)
@@ -226,6 +250,28 @@ private fun handleBackPressed(
     val page = Pages.pageList.find { it.name == route }
     navController.navigateUp()
     page?.let { mainScreenViewModel.changeSelectedPage(page) }
+}
+
+private fun onBookClick(
+    needsNetwork: Boolean,
+    navController: NavHostController,
+    bookPageViewModel: BookPageViewModel,
+    mainScreenViewModel: MainScreenViewModel,
+    scope: CoroutineScope,
+    scrollState: ScrollState,
+    title: String,
+    bookId: String
+) {
+    navController.navigate(Screen.BookScreen.passBookId(bookId))
+    if (needsNetwork) {
+        bookPageViewModel.getBookDetailsFromNetwork(bookId)
+    } else {
+        bookPageViewModel.getBookDetailsFromStorage(bookId)
+    }
+    mainScreenViewModel.changeSelectedPage(Page(name = title))
+    scope.launch {
+        scrollState.scrollTo(0)
+    }
 }
 
 private suspend fun showSnackBar(

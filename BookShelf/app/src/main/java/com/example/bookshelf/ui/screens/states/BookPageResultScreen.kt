@@ -31,9 +31,7 @@ import com.example.bookshelf.model.SaleInfo
 import com.example.bookshelf.ui.components.DetailsText
 
 @Composable
-fun BookPageResultScreen(book: ExtendedBook) {
-    val scrollState: ScrollState = rememberScrollState()
-
+fun BookPageResultScreen(book: ExtendedBook, scrollState: ScrollState) {
     Column(
         modifier = Modifier
             .padding(16.dp)
@@ -144,6 +142,7 @@ fun BookPageResultScreenPreview() {
             saleInfo = SaleInfo(
                 buyLink = "www.kutyacica.com"
             )
-        )
+        ),
+        rememberScrollState()
     )
 }

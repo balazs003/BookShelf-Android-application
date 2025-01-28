@@ -1,6 +1,7 @@
 package com.example.bookshelf.ui.screens
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.ScrollState
 import androidx.compose.runtime.Composable
 import com.example.bookshelf.presentation.BookPageUiState
 import com.example.bookshelf.ui.screens.states.BookPageResultScreen
@@ -10,6 +11,7 @@ import com.example.bookshelf.ui.screens.states.LoadingScreen
 @Composable
 fun BookScreen(
     bookPageUiState: BookPageUiState,
+    scrollState: ScrollState,
     retryAction: () -> Unit,
     onBackPressed: () -> Unit
 ) {
@@ -25,6 +27,6 @@ fun BookScreen(
                 retryAction
             )
         is BookPageUiState.Success ->
-            BookPageResultScreen(bookPageUiState.book)
+            BookPageResultScreen(bookPageUiState.book, scrollState)
     }
 }
