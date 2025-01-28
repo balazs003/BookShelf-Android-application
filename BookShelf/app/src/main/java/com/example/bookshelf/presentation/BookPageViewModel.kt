@@ -28,14 +28,15 @@ class BookPageViewModel(
     private val offlineBookRepository: OfflineBookRepository
 ): ViewModel() {
     var bookPageUiState: BookPageUiState by mutableStateOf(BookPageUiState.Loading)
-    var _selectedBookState = MutableStateFlow(SelectedBookState())
+    private var _selectedBookState = MutableStateFlow(SelectedBookState())
     val selectedBookState: StateFlow<SelectedBookState> = _selectedBookState.asStateFlow()
 
     fun getBookDetailsFromNetwork(bookId: String) {
         viewModelScope.launch {
             bookPageUiState = try {
                 val book = onlineBookRepository.getBookDetails(bookId)
-                updateSelectedBookState(book)
+                val saved = offlineBookRepository.getStoredBookById(bookId) != null
+                updateSelectedBookState(book, saved)
                 BookPageUiState.Success(book)
             } catch (e: IOException) {
                 BookPageUiState.Error(e.message ?: "IOException")
@@ -48,11 +49,26 @@ class BookPageViewModel(
     fun getBookDetailsFromStorage(bookId: String) {
         viewModelScope.launch {
             val book = offlineBookRepository.getStoredBookById(bookId)
-            bookPageUiState = BookPageUiState.Success(book)
+            updateSelectedBookState(book, isSaved = true)
+            bookPageUiState = BookPageUiState.Success(book!!)
         }
     }
 
-    private fun updateSelectedBookState(
+    fun saveBook(book: ExtendedBook) {
+        viewModelScope.launch {
+            offlineBookRepository.saveBook(book)
+            updateSelectedBookState(book, isSaved = true)
+        }
+    }
+
+    fun deleteBook(book: ExtendedBook) {
+        viewModelScope.launch {
+            offlineBookRepository.deleteBook(book)
+            updateSelectedBookState(book, isSaved = false)
+        }
+    }
+
+    fun updateSelectedBookState(
         book: ExtendedBook? = _selectedBookState.value.book,
         isSaved: Boolean = _selectedBookState.value.isSaved
     ) {
