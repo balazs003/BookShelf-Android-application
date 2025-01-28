@@ -46,6 +46,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.bookshelf.R
+import com.example.bookshelf.data.MainScreenUiState
 import com.example.bookshelf.presentation.AppViewModelProvider
 import com.example.bookshelf.presentation.BookPageViewModel
 import com.example.bookshelf.presentation.MainScreenViewModel
@@ -124,6 +125,7 @@ fun BookShelfApp() {
                 scrollBehavior = bottomAppBarScrollBehavior,
                 selectedPage = mainScreenUiState.selectedPage,
                 onPageSelect = {
+                    navController.popBackStack(it.name, false)
                     navController.navigate(it.name)
                     mainScreenViewModel.changeSelectedPage(it)
                 }
@@ -150,7 +152,8 @@ fun BookShelfApp() {
                                     snackbarHostState = snackbarHostState,
                                     message = "Book saved!",
                                     showAction = true,
-                                    navController = navController
+                                    navController = navController,
+                                    mainScreenViewModel = mainScreenViewModel
                                 )
                             }
                         }
@@ -276,7 +279,8 @@ private suspend fun showSnackBar(
     snackbarHostState: SnackbarHostState,
     message: String,
     showAction: Boolean,
-    navController: NavHostController? = null
+    navController: NavHostController? = null,
+    mainScreenViewModel: MainScreenViewModel? = null
 ) {
     val result = snackbarHostState
         .showSnackbar(
@@ -287,6 +291,7 @@ private suspend fun showSnackBar(
     when (result) {
         SnackbarResult.ActionPerformed -> {
             if (showAction) {
+                mainScreenViewModel?.changeSelectedPage(Pages.savedPage)
                 navController?.navigate(Screen.SavedScreen.route)
             }
         }
