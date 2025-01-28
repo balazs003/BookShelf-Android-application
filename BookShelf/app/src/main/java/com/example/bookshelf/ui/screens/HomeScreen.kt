@@ -2,6 +2,11 @@ package com.example.bookshelf.ui.screens
 
 import androidx.compose.runtime.Composable
 import com.example.bookshelf.presentation.BookShelfUiState
+import com.example.bookshelf.ui.screens.states.ErrorScreen
+import com.example.bookshelf.ui.screens.states.HomePageResultScreen
+import com.example.bookshelf.ui.screens.states.InitialScreen
+import com.example.bookshelf.ui.screens.states.LoadingScreen
+import com.example.bookshelf.ui.screens.states.NoResultScreen
 
 @Composable
 fun HomeScreen(

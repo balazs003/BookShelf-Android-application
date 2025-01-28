@@ -1,4 +1,4 @@
-package com.example.bookshelf.ui.screens
+package com.example.bookshelf.ui.screens.states
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Column
@@ -18,12 +18,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.bookshelf.R
+import com.example.bookshelf.model.AccessInfo
 import com.example.bookshelf.model.ExtendedBook
+import com.example.bookshelf.model.ExtendedVolumeInfo
+import com.example.bookshelf.model.SaleInfo
+import com.example.bookshelf.model.VolumeInfo
 import com.example.bookshelf.ui.components.DetailsText
 
 @Composable
@@ -52,97 +57,87 @@ fun BookPageResultScreen(book: ExtendedBook) {
         Spacer(Modifier.height(20.dp))
 
         book.volumeInfo.title?.let {
-            DetailsText(
-                value = it,
+            Text(
+                text = it,
+                style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.headlineMedium
+                modifier = Modifier.padding(bottom = 16.dp)
             )
         }
 
         book.volumeInfo.authors?.let {
             DetailsText(
-                value = stringResource(R.string.authors),
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodyLarge
-            )
-            DetailsText(
+                title = stringResource(R.string.authors),
                 value = it.joinToString(", ")
             )
         }
 
         book.volumeInfo.publisher?.let {
             DetailsText(
-                value = stringResource(R.string.publisher),
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodyLarge
-            )
-            DetailsText(
+                title = stringResource(R.string.publisher),
                 value = it
             )
         }
 
         book.volumeInfo.publishedDate?.let {
             DetailsText(
-                value = stringResource(R.string.published_on),
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodyLarge
-            )
-            DetailsText(
+                title = stringResource(R.string.published_on),
                 value = it
             )
         }
 
         book.volumeInfo.description?.let {
             DetailsText(
-                value = stringResource(R.string.description),
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodyLarge
-            )
-            DetailsText(
+                title = stringResource(R.string.description),
                 value = it
             )
         }
 
-        Spacer(Modifier.height(10.dp))
-
         book.volumeInfo.pageCount?.let {
             DetailsText(
-                value = stringResource(R.string.page_count),
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodyLarge
-            )
-            DetailsText(
+                title = stringResource(R.string.page_count),
                 value = "$it pages"
             )
         }
 
         book.accessInfo?.webReaderLink?.let {
             DetailsText(
-                value = stringResource(R.string.read_online),
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodyLarge
-            )
-            DetailsText(
-                value = it
+                title = stringResource(R.string.read_online),
+                value = it,
+                isClickable = true
             )
         }
 
         book.saleInfo?.buyLink?.let {
             DetailsText(
-                value = stringResource(R.string.buy_it),
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodyLarge
-            )
-            DetailsText(
-                value = it
+                title = stringResource(R.string.buy_it),
+                value = it,
+                isClickable = true
             )
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BookPageResultScreenPreview() {
+    BookPageResultScreen(
+        book = ExtendedBook(
+            id = "1",
+            volumeInfo = ExtendedVolumeInfo(
+                title = "Book Title",
+                authors = listOf("Ava Max"),
+                publisher = "Nemeth Studios",
+                publishedDate = "2022.03.11",
+                description = "This is a description text.This is a description text.This is a description text.This is a description text.This is a description text.This is a description text.This is a description text.This is a description text.This is a description text.This is a description text.This is a description text.",
+                pageCount = 300
+            ),
+            accessInfo = AccessInfo(
+                webReaderLink = "www.cicakutya.com"
+            ),
+            saleInfo = SaleInfo(
+                buyLink = "www.kutyacica.com"
+            )
+        )
+    )
 }

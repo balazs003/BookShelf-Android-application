@@ -1,4 +1,4 @@
-package com.example.bookshelf.ui.screens
+package com.example.bookshelf.ui.screens.states
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

@@ -1,4 +1,4 @@
-package com.example.bookshelf.ui.screens
+package com.example.bookshelf.ui.screens.states
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.example.bookshelf.R
 
 @Composable
-fun NoResultScreen(modifier: Modifier = Modifier) {
+fun InitialScreen(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -23,7 +23,7 @@ fun NoResultScreen(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = stringResource(R.string.no_result_screen_text),
+            text = stringResource(R.string.init_screen_text),
             style = MaterialTheme.typography.bodyMedium
         )
     }
