@@ -34,7 +34,6 @@ fun DetailsText(
         style = TextStyle(
             textDecoration = if(isClickable) TextDecoration.Underline else TextDecoration.None
         ),
-        color = MaterialTheme.colorScheme.onSecondaryContainer,
         modifier = Modifier
             .padding(bottom = 16.dp)
             .clickable(enabled = isClickable) {
