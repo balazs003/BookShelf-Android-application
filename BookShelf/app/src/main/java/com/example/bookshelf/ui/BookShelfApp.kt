@@ -3,6 +3,12 @@ package com.example.bookshelf.ui
 import android.annotation.SuppressLint
 import android.app.Activity
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -140,7 +146,11 @@ fun BookShelfApp() {
         },
         floatingActionButton = {
             val route = backStackEntry?.destination?.route
-            if (route == Screen.BookScreen.route) {
+            AnimatedVisibility (
+                visible = route == Screen.BookScreen.route,
+                enter = fadeIn() + slideInHorizontally { fullWidth -> fullWidth / 2 },
+                exit = fadeOut() + slideOutHorizontally { fullWidth -> fullWidth / 2 }
+            ) {
                 FloatingActionButton(
                     onClick = {
                         if (selectedBookState.isSaved) {

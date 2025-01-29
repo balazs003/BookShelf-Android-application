@@ -21,7 +21,6 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.example.bookshelf.R
 import com.example.bookshelf.model.Book
-import com.example.bookshelf.model.ExtendedBook
 
 @Composable
 fun BookCard(
@@ -33,7 +32,11 @@ fun BookCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(6.dp)
-            .clickable { onBookClick(bookModel.id) },
+            .clickable(
+                onClick = {
+                    onBookClick(bookModel.id)
+                }
+            ),
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer,

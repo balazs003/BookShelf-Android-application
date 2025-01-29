@@ -1,6 +1,7 @@
 package com.example.bookshelf.ui.screens
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.runtime.Composable
 import com.example.bookshelf.presentation.BookShelfUiState
 import com.example.bookshelf.ui.screens.states.ErrorScreen
@@ -19,26 +20,30 @@ fun HomeScreen(
     BackHandler(enabled = true) {
         onBackClick()
     }
-    when (bookShelfUiState) {
-        is BookShelfUiState.Initial ->
-            InitialScreen()
+    AnimatedContent(
+        targetState = bookShelfUiState
+    ) { targetState ->
+        when (targetState) {
+            is BookShelfUiState.Initial ->
+                InitialScreen()
 
-        is BookShelfUiState.Loading ->
-            LoadingScreen()
+            is BookShelfUiState.Loading ->
+                LoadingScreen()
 
-        is BookShelfUiState.NoResult ->
-            NoResultScreen()
+            is BookShelfUiState.NoResult ->
+                NoResultScreen()
 
-        is BookShelfUiState.Error ->
-            ErrorScreen(
-                bookShelfUiState.errorMessage,
-                retryAction
-            )
+            is BookShelfUiState.Error ->
+                ErrorScreen(
+                    targetState.errorMessage,
+                    retryAction
+                )
 
-        is BookShelfUiState.Success ->
-            ResultScreen(
-                bookList = bookShelfUiState.bookList,
-                onBookClick = onBookClick
-            )
+            is BookShelfUiState.Success ->
+                ResultScreen(
+                    bookList = targetState.bookList,
+                    onBookClick = onBookClick
+                )
+        }
     }
 }
