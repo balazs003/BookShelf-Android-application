@@ -21,4 +21,8 @@
     <string name="saved_page">Saved</string>
     <string name="language">Language:</string>
     <string name="save_books_prompt">Save books to view them offline.</string>
+    <string name="close_the_app">Close the app?</string>
+    <string name="do_you_want_to_exit_the_app">Do you want to exit the app?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

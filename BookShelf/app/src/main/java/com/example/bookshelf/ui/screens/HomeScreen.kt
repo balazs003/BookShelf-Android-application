@@ -1,5 +1,6 @@
 package com.example.bookshelf.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import com.example.bookshelf.presentation.BookShelfUiState
 import com.example.bookshelf.ui.screens.states.ErrorScreen
@@ -12,8 +13,12 @@ import com.example.bookshelf.ui.screens.states.NoResultScreen
 fun HomeScreen(
     bookShelfUiState: BookShelfUiState,
     retryAction: () -> Unit,
-    onBookClick: (String) -> Unit
+    onBookClick: (String) -> Unit,
+    onBackClick: () -> Unit
 ) {
+    BackHandler(enabled = true) {
+        onBackClick()
+    }
     when (bookShelfUiState) {
         is BookShelfUiState.Initial ->
             InitialScreen()

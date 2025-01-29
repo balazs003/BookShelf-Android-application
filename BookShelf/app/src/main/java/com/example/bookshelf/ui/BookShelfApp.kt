@@ -1,5 +1,7 @@
 package com.example.bookshelf.ui
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -46,7 +49,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.bookshelf.R
-import com.example.bookshelf.data.MainScreenUiState
 import com.example.bookshelf.presentation.AppViewModelProvider
 import com.example.bookshelf.presentation.BookPageViewModel
 import com.example.bookshelf.presentation.MainScreenViewModel
@@ -54,6 +56,7 @@ import com.example.bookshelf.presentation.OfflineBookShelfViewModel
 import com.example.bookshelf.presentation.OnlineBookShelfViewModel
 import com.example.bookshelf.ui.components.BookShelfBottomAppBar
 import com.example.bookshelf.ui.components.BookShelfTopAppBar
+import com.example.bookshelf.ui.components.ExitAlertDialog
 import com.example.bookshelf.ui.screens.BookScreen
 import com.example.bookshelf.ui.screens.HomeScreen
 import com.example.bookshelf.ui.screens.Page
@@ -63,6 +66,7 @@ import com.example.bookshelf.ui.screens.Screen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@SuppressLint("ContextCastToActivity")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookShelfApp() {
@@ -84,6 +88,8 @@ fun BookShelfApp() {
     var searchInput: String by rememberSaveable {
         mutableStateOf("")
     }
+
+    var isDialogOpen by rememberSaveable { mutableStateOf(false) }
 
     val navController: NavHostController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -204,6 +210,9 @@ fun BookShelfApp() {
                         retryAction = { onlineBookShelfViewModel.getBooksFromNetwork(searchInput) },
                         onBookClick = {
                             onBookClick(needsNetwork = true, navController, bookPageViewModel, mainScreenViewModel, scope, scrollState, title, bookId = it)
+                        },
+                        onBackClick = {
+                            isDialogOpen = !isDialogOpen
                         }
                     )
                 }
@@ -241,6 +250,12 @@ fun BookShelfApp() {
                 }
             }
         }
+    }
+    if(isDialogOpen) {
+        ExitAlertDialog(
+            activity = LocalContext.current as Activity,
+            dismiss = { isDialogOpen = false }
+        )
     }
 }
 
