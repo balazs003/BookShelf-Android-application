@@ -210,7 +210,7 @@ fun BookShelfApp() {
                 composable(Screen.HomeScreen.route) {
                     val title = stringResource(R.string.book_page_title)
                     HomeScreen(
-                        bookShelfUiState = onlineBookShelfViewModel.bookShelfUiState,
+                        viewModel = onlineBookShelfViewModel,
                         retryAction = { onlineBookShelfViewModel.getBooksFromNetwork(searchInput) },
                         onBookClick = {
                             onBookClick(needsNetwork = true, navController, bookPageViewModel, mainScreenViewModel, scope, scrollState, title, bookId = it)

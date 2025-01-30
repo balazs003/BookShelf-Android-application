@@ -7,31 +7,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
-import androidx.compose.material3.InputChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.bookshelf.model.Book
-import com.example.bookshelf.presentation.Filter
+import com.example.bookshelf.R
+import com.example.bookshelf.presentation.OnlineBookShelfViewModel
 
 @Composable
-fun ChipContainer(filters: List<Filter>) {
+fun ChipContainer(viewModel: OnlineBookShelfViewModel) {
     var isOpen: Boolean by rememberSaveable { mutableStateOf(false) }
-
-    val selectedFilters = remember { mutableStateMapOf<Filter, Boolean>() }
 
     TextButton(
         onClick = {
@@ -40,7 +36,7 @@ fun ChipContainer(filters: List<Filter>) {
         modifier = Modifier.padding(horizontal = 4.dp)
     ) {
         Text(
-            text = "Filters",
+            text = stringResource(R.string.filters),
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.bodyMedium
         )
@@ -57,14 +53,12 @@ fun ChipContainer(filters: List<Filter>) {
                 .horizontalScroll(rememberScrollState())
                 .padding(horizontal = 14.dp)
         ) {
-            filters.forEach { filter ->
-                InputChip(
-                    selected = selectedFilters[filter] ?: false,
-                    onClick = { selectedFilters[filter] = !(selectedFilters[filter] ?: false) },
-                    label = { Text(filter.name ?: "default") },
-                    leadingIcon = {
-                        Icon(filter.icon, contentDescription = "Add")
-                    },
+            viewModel.filterGroups.filters.forEach { filter ->
+                FilterChip(
+                    selected = viewModel.filterGroups.selectedLanguages.contains(filter.name) || viewModel.filterGroups.selectedAuthors.contains(filter.name),
+                    onClick = { viewModel.toggleFilter(filter.name) },
+                    label = { Text(filter.name) },
+                    leadingIcon = { Icon(filter.icon, contentDescription = null) },
                     modifier = Modifier.padding(end = 8.dp)
                 )
             }

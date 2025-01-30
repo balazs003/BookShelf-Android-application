@@ -25,4 +25,5 @@
     <string name="do_you_want_to_exit_the_app">Do you want to exit the app?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="filters">Filters</string>
 </resources>
