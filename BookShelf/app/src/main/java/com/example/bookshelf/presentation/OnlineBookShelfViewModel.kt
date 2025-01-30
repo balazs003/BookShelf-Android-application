@@ -36,7 +36,7 @@ class OnlineBookShelfViewModel(
 
     var isFirstTry by mutableStateOf(true)
 
-    lateinit var filterGroups: FilterGroups
+    var filterGroups by mutableStateOf(FilterGroups(emptyList()) {})
 
     init {
         getBooksFromNetwork(defaultQueryString)
@@ -48,6 +48,7 @@ class OnlineBookShelfViewModel(
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
             delay(500)
+            filterGroups.deleteFilters()
             try {
                 _bookShelfUiState.value = BookShelfUiState.Loading
                 if (!isQueryValid(modifiedQueryString)) {
@@ -69,9 +70,9 @@ class OnlineBookShelfViewModel(
         }
     }
 
-    fun toggleFilter(name: String) {
-        filterGroups.toggleFilter(name)
-    }
+    fun toggleFilter(filter: Filter) = filterGroups.toggleFilter(filter)
+
+    fun resetFilters() = filterGroups.resetFilters()
 
     private fun loadFilters(books: List<Book>) {
         filterGroups = FilterGroups(
