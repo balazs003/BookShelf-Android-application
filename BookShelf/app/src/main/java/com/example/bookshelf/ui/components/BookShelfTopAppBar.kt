@@ -52,7 +52,7 @@ fun BookShelfTopAppBar(
             title = {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.headlineSmall
+                    style = MaterialTheme.typography.headlineLarge
                 )
             },
             navigationIcon = {

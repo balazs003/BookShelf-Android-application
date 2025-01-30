@@ -71,6 +71,7 @@ dependencies {
     //Room + ksp
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.ui.text.google.fonts)
     ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
 
     testImplementation(libs.junit)
