@@ -1,8 +1,6 @@
 package com.example.bookshelf.ui.components
 
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.BottomAppBarScrollBehavior
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -15,16 +13,13 @@ import androidx.compose.ui.graphics.Color
 import com.example.bookshelf.ui.screens.Page
 import com.example.bookshelf.ui.screens.Pages
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookShelfBottomAppBar(
-    scrollBehavior: BottomAppBarScrollBehavior,
     selectedPage: Page,
     onPageSelect: (Page) -> Unit,
     modifier: Modifier = Modifier
 ) {
     BottomAppBar(
-        scrollBehavior = scrollBehavior,
         modifier = modifier
     ) {
         NavigationBar(

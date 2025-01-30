@@ -38,9 +38,10 @@ fun BookPageResultScreen(book: ExtendedBook, scrollState: ScrollState) {
             .fillMaxSize()
             .verticalScroll(scrollState)
     ) {
+        val imageLink: String = getImageLink(book)
         AsyncImage(
             model = ImageRequest.Builder(context = LocalContext.current)
-                .data(book.volumeInfo.imageLinks?.large)
+                .data(imageLink)
                 .crossfade(enable = true)
                 .build(),
             contentDescription = "",
@@ -120,6 +121,25 @@ fun BookPageResultScreen(book: ExtendedBook, scrollState: ScrollState) {
             )
         }
     }
+}
+
+private fun getImageLink(book: ExtendedBook): String {
+    val imageLink: String =
+    if (!book.volumeInfo.imageLinks?.extraLarge.isNullOrEmpty())
+        book.volumeInfo.imageLinks?.extraLarge!!
+    else if (!book.volumeInfo.imageLinks?.large.isNullOrEmpty())
+        book.volumeInfo.imageLinks?.large!!
+    else if (!book.volumeInfo.imageLinks?.medium.isNullOrEmpty())
+        book.volumeInfo.imageLinks?.medium!!
+    else if (!book.volumeInfo.imageLinks?.small.isNullOrEmpty())
+        book.volumeInfo.imageLinks?.small!!
+    else if (!book.volumeInfo.imageLinks?.thumbnail.isNullOrEmpty())
+        book.volumeInfo.imageLinks?.thumbnail!!
+    else if (!book.volumeInfo.imageLinks?.smallThumbnail.isNullOrEmpty())
+        book.volumeInfo.imageLinks?.smallThumbnail!!
+    else ""
+
+    return imageLink
 }
 
 @Preview(showBackground = true)

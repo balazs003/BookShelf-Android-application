@@ -17,7 +17,8 @@ data class Book(
 data class VolumeInfo(
     val title: String? = null,
     val authors: List<String>? = null,
-    val imageLinks: ImageLinks? = null
+    val imageLinks: ImageLinks? = null,
+    val pageCount: Int? = null
 )
 
 @Serializable
