@@ -2,6 +2,7 @@ package com.example.bookshelf.ui.screens.states
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -20,8 +21,9 @@ fun ResultScreen(
 ) {
     LazyVerticalGrid(
         modifier = modifier
-            .fillMaxSize(),
-        columns = GridCells.Adaptive(minSize = 200.dp)
+            .fillMaxSize()
+            .padding(horizontal = 8.dp),
+        columns = GridCells.Adaptive(minSize = 190.dp)
     ) {
         items(items = bookList, key = { book -> book.id }) { book ->
             BookCard(

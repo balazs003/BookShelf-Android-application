@@ -2,8 +2,12 @@ package com.example.bookshelf.ui.screens
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import com.example.bookshelf.presentation.BookShelfUiState
+import com.example.bookshelf.presentation.FilterGroups
+import com.example.bookshelf.ui.components.ChipContainer
 import com.example.bookshelf.ui.screens.states.ErrorScreen
 import com.example.bookshelf.ui.screens.states.ResultScreen
 import com.example.bookshelf.ui.screens.states.InitialScreen
@@ -40,10 +44,18 @@ fun HomeScreen(
                 )
 
             is BookShelfUiState.Success ->
-                ResultScreen(
-                    bookList = targetState.bookList,
-                    onBookClick = onBookClick
-                )
+                Column {
+                    val filterGroups = FilterGroups(
+                        bookList = targetState.bookList,
+                        languageAction = {},
+                        authorAction = {}
+                    )
+                    ChipContainer(filters = filterGroups.languageFilters + filterGroups.authorFilters)
+                    ResultScreen(
+                        bookList = targetState.bookList,
+                        onBookClick = onBookClick
+                    )
+                }
         }
     }
 }

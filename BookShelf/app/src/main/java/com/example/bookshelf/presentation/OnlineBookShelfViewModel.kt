@@ -15,7 +15,7 @@ import retrofit2.HttpException
 import java.io.IOException
 
 sealed interface BookShelfUiState {
-    data class Success(val bookList: List<Book>): BookShelfUiState
+    data class Success(var bookList: List<Book>): BookShelfUiState
     data object NoResult: BookShelfUiState
     data class Error(val errorMessage: String): BookShelfUiState
     data object Loading: BookShelfUiState
