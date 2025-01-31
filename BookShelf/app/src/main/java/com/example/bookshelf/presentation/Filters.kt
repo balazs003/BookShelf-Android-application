@@ -1,8 +1,8 @@
 package com.example.bookshelf.presentation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.twotone.AccountCircle
+import androidx.compose.material.icons.twotone.LocationOn
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -24,23 +24,31 @@ class FilterGroups(
     private val fullBookList: List<Book>,
     private val onFiltersChanged: (List<Book>) -> Unit
 ) {
-    private val languageFilters = fullBookList
-        .filter { !it.volumeInfo.language.isNullOrEmpty() }
-        .map { book -> Filter(
-            name = book.volumeInfo.language!!,
-            icon = Icons.Default.Place,
-            selected = mutableStateOf(false)
-        ) }
-        .distinctBy { it.name }
+    private val languageFilters = if (
+        fullBookList.filter { !it.volumeInfo.language.isNullOrEmpty() }.distinctBy { it.volumeInfo.language }.size > 1
+    ) {
+        fullBookList
+            .filter { !it.volumeInfo.language.isNullOrEmpty() }
+            .map { book -> Filter(
+                name = book.volumeInfo.language!!,
+                icon = Icons.TwoTone.LocationOn,
+                selected = mutableStateOf(false)
+            ) }
+            .distinctBy { it.name }
+    } else emptyList()
 
-    private val authorFilters = fullBookList
-        .filter { !it.volumeInfo.authors.isNullOrEmpty() }
-        .map { book -> Filter(
-            name = book.volumeInfo.authors?.get(0) ?: "",
-            icon = Icons.Default.Person,
-            selected = mutableStateOf(false)
-        ) }
-        .distinctBy { it.name }
+    private val authorFilters = if (
+        fullBookList.filter { !it.volumeInfo.authors.isNullOrEmpty() }.distinctBy { it.volumeInfo.authors }.size > 1
+    ) {
+        fullBookList
+            .filter { !it.volumeInfo.authors.isNullOrEmpty() }
+            .map { book -> Filter(
+                name = book.volumeInfo.authors?.get(0) ?: "",
+                icon = Icons.TwoTone.AccountCircle,
+                selected = mutableStateOf(false)
+            ) }
+            .distinctBy { it.name }
+    } else emptyList()
 
     private var _filters: MutableStateFlow<List<Filter>> = MutableStateFlow(languageFilters + authorFilters)
     val filters: StateFlow<List<Filter>> = _filters.asStateFlow()
