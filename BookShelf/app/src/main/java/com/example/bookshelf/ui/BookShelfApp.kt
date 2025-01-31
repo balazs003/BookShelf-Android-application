@@ -142,7 +142,7 @@ fun BookShelfApp() {
         floatingActionButton = {
             val route = backStackEntry?.destination?.route
             AnimatedVisibility (
-                visible = route == Screen.BookScreen.route,
+                visible = route == Screen.BookScreen.route && selectedBookState.book != null,
                 enter = fadeIn() + slideInHorizontally { fullWidth -> fullWidth / 2 },
                 exit = fadeOut() + slideOutHorizontally { fullWidth -> fullWidth / 2 }
             ) {

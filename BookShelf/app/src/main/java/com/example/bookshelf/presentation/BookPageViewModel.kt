@@ -39,9 +39,11 @@ class BookPageViewModel(
                 updateSelectedBookState(book, saved)
                 BookPageUiState.Success(book)
             } catch (e: IOException) {
+                updateSelectedBookState(null, false)
                 BookPageUiState.Error(e.message ?: "IOException")
             } catch (e: HttpException) {
-                BookPageUiState.Error(e.message())
+                updateSelectedBookState(null, false)
+                BookPageUiState.Error(e.message ?: "HttpException")
             }
         }
     }
