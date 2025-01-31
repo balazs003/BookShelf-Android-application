@@ -2,6 +2,7 @@ package com.example.bookshelf.ui
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -145,6 +146,7 @@ fun BookShelfApp() {
                 enter = fadeIn() + slideInHorizontally { fullWidth -> fullWidth / 2 },
                 exit = fadeOut() + slideOutHorizontally { fullWidth -> fullWidth / 2 }
             ) {
+                val context = LocalContext.current
                 FloatingActionButton(
                     onClick = {
                         if (selectedBookState.isSaved) {
@@ -152,8 +154,9 @@ fun BookShelfApp() {
                             scope.launch {
                                 showSnackBar(
                                     snackbarHostState = snackbarHostState,
-                                    message = "Book deleted!",
-                                    showAction = false
+                                    message = context.getString(R.string.book_deleted),
+                                    showAction = false,
+                                    context = context
                                 )
                             }
                         } else {
@@ -161,8 +164,9 @@ fun BookShelfApp() {
                             scope.launch {
                                 showSnackBar(
                                     snackbarHostState = snackbarHostState,
-                                    message = "Book saved!",
+                                    message = context.getString(R.string.book_saved),
                                     showAction = true,
+                                    context = context,
                                     navController = navController,
                                     mainScreenViewModel = mainScreenViewModel
                                 )
@@ -182,7 +186,7 @@ fun BookShelfApp() {
                                 contentDescription = ""
                             )
                             AnimatedVisibility (visible = isAtTop) {
-                                Text(text = "Delete book", modifier = Modifier.padding(start = 10.dp))
+                                Text(text = stringResource(R.string.delete_book), modifier = Modifier.padding(start = 10.dp))
                             }
                         } else {
                             Icon(
@@ -190,7 +194,7 @@ fun BookShelfApp() {
                                 contentDescription = ""
                             )
                             AnimatedVisibility (visible = isAtTop) {
-                                Text(text = "Save book", modifier = Modifier.padding(start = 10.dp))
+                                Text(text = stringResource(R.string.save_book), modifier = Modifier.padding(start = 10.dp))
                             }
                         }
                     }
@@ -299,13 +303,14 @@ private suspend fun showSnackBar(
     snackbarHostState: SnackbarHostState,
     message: String,
     showAction: Boolean,
+    context: Context,
     navController: NavHostController? = null,
     mainScreenViewModel: MainScreenViewModel? = null
 ) {
     val result = snackbarHostState
         .showSnackbar(
             message = message,
-            actionLabel = if (showAction) "View" else "",
+            actionLabel = if (showAction) context.getString(R.string.view) else "",
             duration = SnackbarDuration.Short
         )
     when (result) {

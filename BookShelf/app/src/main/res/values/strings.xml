@@ -27,4 +27,11 @@
     <string name="no">No</string>
     <string name="filters">Search filters</string>
     <string name="clear_filters">Clear filters</string>
+    <string name="book_deleted">Book deleted!</string>
+    <string name="book_saved">Book saved!</string>
+    <string name="delete_book">Delete book</string>
+    <string name="save_book">Save book</string>
+    <string name="view">View</string>
+    <string name="back_online">Back online!</string>
+    <string name="lost_connection">Lost connection...</string>
 </resources>

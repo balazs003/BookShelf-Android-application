@@ -68,7 +68,7 @@ class BookPageViewModel(
         }
     }
 
-    fun updateSelectedBookState(
+    private fun updateSelectedBookState(
         book: ExtendedBook? = _selectedBookState.value.book,
         isSaved: Boolean = _selectedBookState.value.isSaved
     ) {
