@@ -1,6 +1,7 @@
 package com.example.bookshelf.ui.screens
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,11 +9,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.example.bookshelf.R
+import com.example.bookshelf.model.Book
 import com.example.bookshelf.presentation.OfflineBookShelfViewModel
+import com.example.bookshelf.ui.components.AppAlertDialog
 import com.example.bookshelf.ui.screens.states.ResultScreen
 
 @Composable
@@ -44,6 +50,7 @@ fun SavedBooksScreen(
             ResultScreen(
                 bookList = storedBooks,
                 isSelectionModeAvailable = true,
+                viewModel = viewModel,
                 onBookClick = onBookClick
             )
         }

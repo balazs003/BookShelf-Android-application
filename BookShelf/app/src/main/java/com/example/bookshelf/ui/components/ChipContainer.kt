@@ -48,7 +48,7 @@ fun ChipContainer(viewModel: OnlineBookShelfViewModel) {
             Text(
                 text = stringResource(R.string.filters),
                 color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyLarge
             )
             Icon(
                 imageVector = if (isOpen) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,

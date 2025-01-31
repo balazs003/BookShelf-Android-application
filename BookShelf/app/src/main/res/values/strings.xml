@@ -35,4 +35,8 @@
     <string name="back_online">Back online!</string>
     <string name="lost_connection">Lost connection...</string>
     <string name="clear_selection">Clear Selection</string>
+    <string name="selected">"Selected "</string>
+    <string name="delete_selection">Delete selection?</string>
+    <string name="do_you_really_want_to_delete_the_selected_books">Do you really want to delete the selected books?</string>
+    <string name="delete">Delete</string>
 </resources>

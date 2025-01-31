@@ -60,7 +60,7 @@ import com.example.bookshelf.presentation.OfflineBookShelfViewModel
 import com.example.bookshelf.presentation.OnlineBookShelfViewModel
 import com.example.bookshelf.ui.components.BookShelfBottomAppBar
 import com.example.bookshelf.ui.components.BookShelfTopAppBar
-import com.example.bookshelf.ui.components.ExitAlertDialog
+import com.example.bookshelf.ui.components.AppAlertDialog
 import com.example.bookshelf.ui.screens.BookScreen
 import com.example.bookshelf.ui.screens.HomeScreen
 import com.example.bookshelf.ui.screens.Page
@@ -260,9 +260,16 @@ fun BookShelfApp() {
         }
     }
     if(isDialogOpen) {
-        ExitAlertDialog(
-            activity = LocalContext.current as Activity,
-            dismiss = { isDialogOpen = false }
+        val activity = LocalContext.current as Activity
+        AppAlertDialog(
+            title = stringResource(R.string.close_the_app),
+            text = stringResource(R.string.do_you_want_to_exit_the_app),
+            onConfirm = {
+                activity.finish()
+            },
+            onDismiss = {
+                isDialogOpen = false
+            }
         )
     }
 }

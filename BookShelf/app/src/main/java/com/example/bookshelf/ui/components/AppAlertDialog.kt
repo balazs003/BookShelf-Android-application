@@ -1,6 +1,5 @@
 package com.example.bookshelf.ui.components
 
-import android.app.Activity
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -12,24 +11,29 @@ import androidx.compose.ui.unit.sp
 import com.example.bookshelf.R
 
 @Composable
-fun ExitAlertDialog(activity: Activity, dismiss: () -> Unit) {
+fun AppAlertDialog(
+    title: String,
+    text: String,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
     AlertDialog(
-        onDismissRequest = dismiss,
+        onDismissRequest = onDismiss,
         title = {
             Text(
-                text = stringResource(R.string.close_the_app),
+                text = title,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp
             )
         },
         text = {
-            Text(text = stringResource(R.string.do_you_want_to_exit_the_app), fontSize = 16.sp)
+            Text(text = text, fontSize = 16.sp)
         },
         confirmButton = {
             TextButton(
                 onClick = {
-                    dismiss()
-                    activity.finish()
+                    onDismiss()
+                    onConfirm()
                 }) {
                 Text(
                     text = stringResource(R.string.yes),
@@ -40,9 +44,8 @@ fun ExitAlertDialog(activity: Activity, dismiss: () -> Unit) {
         },
         dismissButton = {
             TextButton(
-                onClick = {
-                    dismiss()
-                }) {
+                onClick = onDismiss
+            ) {
                 Text(
                     text = stringResource(R.string.no),
                     fontWeight = FontWeight.Bold,

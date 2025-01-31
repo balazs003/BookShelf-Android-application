@@ -12,4 +12,15 @@ class OfflineBookShelfViewModel(
 ): ViewModel() {
     fun getAllStoredBooks(): Flow<List<ExtendedBook>> =
         offlineBookRepository.getAllStoredBooksStream()
+
+    fun deleteBooks(bookIds: List<String>) {
+        viewModelScope.launch {
+            bookIds.forEach { id ->
+                val book = offlineBookRepository.getStoredBookById(id)
+                book?.let {
+                    offlineBookRepository.deleteBook(book)
+                }
+            }
+        }
+    }
 }

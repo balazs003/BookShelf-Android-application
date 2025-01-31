@@ -32,25 +32,11 @@ class BookPageViewModel(
     private var _selectedBookState = MutableStateFlow(SelectedBookState())
     val selectedBookState: StateFlow<SelectedBookState> = _selectedBookState.asStateFlow()
 
-    //this works as a cache for saved book id-s so that the content of the FAB can load faster
-    private var inMemorySavedBookIds: MutableList<String> = mutableListOf("")
-
-    init {
-        viewModelScope.launch {
-            val storedBooks = offlineBookRepository.getAllStoredBooksStream().first()
-            inMemorySavedBookIds.addAll(
-                storedBooks.map { book ->
-                    book.id
-                }
-            )
-        }
-    }
-
     fun getBookDetailsFromNetwork(bookId: String) {
         viewModelScope.launch {
             bookPageUiState = try {
                 val book = onlineBookRepository.getBookDetails(bookId)
-                val saved = inMemorySavedBookIds.contains(bookId)
+                val saved = offlineBookRepository.getStoredBookById(bookId) != null
                 updateSelectedBookState(book, saved)
                 BookPageUiState.Success(book)
             } catch (e: IOException) {
@@ -76,7 +62,6 @@ class BookPageViewModel(
             offlineBookRepository.saveBook(book)
             updateSelectedBookState(book, isSaved = true)
         }
-        inMemorySavedBookIds.add(book.id)
     }
 
     fun deleteBook(book: ExtendedBook) {
@@ -84,7 +69,6 @@ class BookPageViewModel(
             offlineBookRepository.deleteBook(book)
             updateSelectedBookState(book, isSaved = false)
         }
-        inMemorySavedBookIds.remove(book.id)
     }
 
     private fun updateSelectedBookState(
