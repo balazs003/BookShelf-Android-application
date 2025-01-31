@@ -31,7 +31,6 @@ fun BookCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(6.dp)
             .clickable(
                 onClick = {
                     onBookClick(bookModel.id)

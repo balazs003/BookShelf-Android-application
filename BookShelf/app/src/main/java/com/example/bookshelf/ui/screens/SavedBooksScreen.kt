@@ -43,6 +43,7 @@ fun SavedBooksScreen(
         } else {
             ResultScreen(
                 bookList = storedBooks,
+                isSelectionModeAvailable = true,
                 onBookClick = onBookClick
             )
         }
