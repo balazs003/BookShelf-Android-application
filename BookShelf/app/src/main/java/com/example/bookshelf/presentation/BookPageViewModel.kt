@@ -12,6 +12,7 @@ import com.example.bookshelf.model.ExtendedBook
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
@@ -31,11 +32,25 @@ class BookPageViewModel(
     private var _selectedBookState = MutableStateFlow(SelectedBookState())
     val selectedBookState: StateFlow<SelectedBookState> = _selectedBookState.asStateFlow()
 
+    //this works as a cache for saved book id-s so that the content of the FAB can load faster
+    private var inMemorySavedBookIds: MutableList<String> = mutableListOf("")
+
+    init {
+        viewModelScope.launch {
+            val storedBooks = offlineBookRepository.getAllStoredBooksStream().first()
+            inMemorySavedBookIds.addAll(
+                storedBooks.map { book ->
+                    book.id
+                }
+            )
+        }
+    }
+
     fun getBookDetailsFromNetwork(bookId: String) {
         viewModelScope.launch {
             bookPageUiState = try {
                 val book = onlineBookRepository.getBookDetails(bookId)
-                val saved = offlineBookRepository.getStoredBookById(bookId) != null
+                val saved = inMemorySavedBookIds.contains(bookId)
                 updateSelectedBookState(book, saved)
                 BookPageUiState.Success(book)
             } catch (e: IOException) {
@@ -61,6 +76,7 @@ class BookPageViewModel(
             offlineBookRepository.saveBook(book)
             updateSelectedBookState(book, isSaved = true)
         }
+        inMemorySavedBookIds.add(book.id)
     }
 
     fun deleteBook(book: ExtendedBook) {
@@ -68,6 +84,7 @@ class BookPageViewModel(
             offlineBookRepository.deleteBook(book)
             updateSelectedBookState(book, isSaved = false)
         }
+        inMemorySavedBookIds.remove(book.id)
     }
 
     private fun updateSelectedBookState(
