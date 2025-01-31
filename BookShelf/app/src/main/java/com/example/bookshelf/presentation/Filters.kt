@@ -56,6 +56,7 @@ class FilterGroups(
 
     fun deleteFilters() {
         _filters.value = emptyList()
+        isFilterSelected = false
     }
 
     fun resetFilters() {
