@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.twotone.Delete
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
@@ -40,7 +41,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bookshelf.R
 import com.example.bookshelf.model.Book
 import com.example.bookshelf.presentation.OfflineBookShelfViewModel
@@ -99,14 +99,14 @@ fun ResultScreen(
                             isDialogOpen = true
                         }
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.Delete,
-                            contentDescription = ""
-                        )
-                        Spacer(Modifier.width(5.dp))
                         Text(
                             text = stringResource(R.string.delete),
                             style = MaterialTheme.typography.bodyLarge
+                        )
+                        Spacer(Modifier.width(5.dp))
+                        Icon(
+                            imageVector = Icons.TwoTone.Delete,
+                            contentDescription = ""
                         )
                     }
                 }
@@ -186,9 +186,10 @@ fun ResultScreen(
                 onConfirm = {
                     Toast.makeText(
                         context,
-                        "${selectedBooks.size} book(s) deleted",
+                        context.getString(R.string.book_s_deleted, selectedBooks.size),
                         Toast.LENGTH_SHORT
                     ).show()
+
                     isDialogOpen = false
                     isSelectionModeActive = false
                     viewModel?.deleteBooks(

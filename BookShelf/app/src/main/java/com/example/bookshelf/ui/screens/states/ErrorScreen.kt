@@ -42,7 +42,9 @@ fun ErrorScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            modifier = Modifier.size(200.dp),
+            modifier = Modifier
+                .size(120.dp)
+                .padding(bottom = 30.dp),
             painter = painterResource(R.drawable.ic_connection_error),
             contentDescription = ""
         )

@@ -15,8 +15,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.twotone.Delete
+import androidx.compose.material.icons.twotone.Star
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -58,9 +58,9 @@ import com.example.bookshelf.presentation.BookPageViewModel
 import com.example.bookshelf.presentation.MainScreenViewModel
 import com.example.bookshelf.presentation.OfflineBookShelfViewModel
 import com.example.bookshelf.presentation.OnlineBookShelfViewModel
+import com.example.bookshelf.ui.components.AppAlertDialog
 import com.example.bookshelf.ui.components.BookShelfBottomAppBar
 import com.example.bookshelf.ui.components.BookShelfTopAppBar
-import com.example.bookshelf.ui.components.AppAlertDialog
 import com.example.bookshelf.ui.screens.BookScreen
 import com.example.bookshelf.ui.screens.HomeScreen
 import com.example.bookshelf.ui.screens.Page
@@ -182,7 +182,7 @@ fun BookShelfApp() {
                     ) {
                         if (selectedBookState.isSaved) {
                             Icon(
-                                imageVector = Icons.Default.Delete,
+                                imageVector = Icons.TwoTone.Delete,
                                 contentDescription = ""
                             )
                             AnimatedVisibility (visible = isAtTop) {
@@ -190,7 +190,7 @@ fun BookShelfApp() {
                             }
                         } else {
                             Icon(
-                                imageVector = Icons.Default.Star,
+                                imageVector = Icons.TwoTone.Star,
                                 contentDescription = ""
                             )
                             AnimatedVisibility (visible = isAtTop) {

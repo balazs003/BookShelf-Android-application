@@ -39,4 +39,5 @@
     <string name="delete_selection">Delete selection?</string>
     <string name="do_you_really_want_to_delete_the_selected_books">Do you really want to delete the selected books?</string>
     <string name="delete">Delete</string>
+    <string name="book_s_deleted">%1$d book(s) deleted</string>
 </resources>
