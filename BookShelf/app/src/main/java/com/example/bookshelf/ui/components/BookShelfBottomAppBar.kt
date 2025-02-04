@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import com.example.bookshelf.ui.screens.Page
 import com.example.bookshelf.ui.screens.Pages
 
@@ -35,7 +36,11 @@ fun BookShelfBottomAppBar(
                         Icon(imageVector = page.icon, contentDescription = "")
                     },
                     label = {
-                        Text(text = page.name.replaceFirstChar { it.uppercaseChar() })
+                        Text(
+                            text = page.name.replaceFirstChar { it.uppercaseChar() },
+                            fontWeight = if (page == selectedPage) FontWeight.Bold else FontWeight.Normal,
+                            color = if (page == selectedPage) MaterialTheme.colorScheme.primary else Color.Unspecified
+                        )
                     },
                     colors = NavigationBarItemDefaults.colors(
                         indicatorColor = MaterialTheme.colorScheme.primaryContainer
