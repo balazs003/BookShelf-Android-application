@@ -32,7 +32,7 @@ class OnlineBookShelfViewModel(
     val bookShelfUiState: StateFlow<BookShelfUiState> = _bookShelfUiState.asStateFlow()
 
     private var searchJob: Job? = null
-    private val defaultQueryString = "jazz music"
+    private val defaultQueryString = ('a'..'z').random().toString()
 
     var isFirstTry by mutableStateOf(true)
 
