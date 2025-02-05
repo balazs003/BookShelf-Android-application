@@ -21,7 +21,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.twotone.Delete
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
@@ -40,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.bookshelf.R
 import com.example.bookshelf.model.Book
@@ -56,6 +56,8 @@ fun ResultScreen(
     viewModel: OfflineBookShelfViewModel? = null,
     onBookClick: (String) -> Unit
 ) {
+    val gridCellsMinSize: Dp = 180.dp
+
     if (isSelectionModeAvailable) {
         var isDialogOpen by rememberSaveable { mutableStateOf(false) }
         var isSelectionModeActive by rememberSaveable { mutableStateOf(false) }
@@ -116,7 +118,7 @@ fun ResultScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 8.dp),
-                columns = GridCells.Adaptive(minSize = 190.dp)
+                columns = GridCells.Adaptive(minSize = gridCellsMinSize)
             ) {
                 items(items = bookList, key = { book -> book.id }) { book ->
                     val isSelected = book in selectedBooks
@@ -205,7 +207,7 @@ fun ResultScreen(
             modifier = modifier
                 .fillMaxSize()
                 .padding(horizontal = 8.dp),
-            columns = GridCells.Adaptive(minSize = 190.dp)
+            columns = GridCells.Adaptive(minSize = gridCellsMinSize)
         ) {
             items(items = bookList, key = { book -> book.id }) { book ->
                 BookCard(
