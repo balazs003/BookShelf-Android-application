@@ -26,5 +26,8 @@ object AppViewModelProvider {
         initializer {
             MainScreenViewModel()
         }
+        initializer {
+            BookSelectionViewModel()
+        }
     }
 }

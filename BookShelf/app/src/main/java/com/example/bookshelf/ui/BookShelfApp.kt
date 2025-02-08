@@ -228,7 +228,7 @@ fun BookShelfApp() {
                 composable(route = Screen.SavedScreen.route) {
                     val title = stringResource(R.string.book_page_title)
                     SavedBooksScreen(
-                        viewModel = offlineBookShelfViewModel,
+                        offlineViewModel = offlineBookShelfViewModel,
                         onBookClick = {
                             onBookClick(needsNetwork = false, navController, bookPageViewModel, mainScreenViewModel, scope, scrollState, title, bookId = it)
                         },

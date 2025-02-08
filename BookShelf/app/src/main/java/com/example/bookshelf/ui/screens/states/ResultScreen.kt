@@ -47,9 +47,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.bookshelf.R
+import com.example.bookshelf.data.SelectedBooksUiState
 import com.example.bookshelf.model.Book
 import com.example.bookshelf.model.ExtendedBook
 import com.example.bookshelf.presentation.OfflineBookShelfViewModel
+import com.example.bookshelf.presentation.BookSelectionViewModel
 import com.example.bookshelf.sharing.SharingUtils
 import com.example.bookshelf.ui.components.AppAlertDialog
 import com.example.bookshelf.ui.components.BookCard
@@ -63,21 +65,21 @@ fun ResultScreen(
     bookList: List<Book>,
     modifier: Modifier = Modifier,
     isSelectionModeAvailable: Boolean = false,
-    viewModel: OfflineBookShelfViewModel? = null,
+    offlineViewModel: OfflineBookShelfViewModel? = null,
+    bookSelectionViewModel: BookSelectionViewModel? = null,
+    uiState: SelectedBooksUiState? = null,
     onBookClick: (String) -> Unit
 ) {
     val gridCellsMinSize: Dp = 180.dp
 
-    if (isSelectionModeAvailable) {
+    if (isSelectionModeAvailable && uiState != null && bookSelectionViewModel != null) {
         val activity = LocalContext.current as Activity
         val coroutineScope = rememberCoroutineScope()
 
         var isDialogOpen by rememberSaveable { mutableStateOf(false) }
-        var isSelectionModeActive by rememberSaveable { mutableStateOf(false) }
-        var selectedBooks by rememberSaveable { mutableStateOf(listOf<Book>()) }
 
         Column {
-            AnimatedVisibility (visible = isSelectionModeActive) {
+            AnimatedVisibility (visible = uiState.isSelectionModeOn) {
                 Row (
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
@@ -86,22 +88,20 @@ fun ResultScreen(
                 ) {
                     TextButton(
                         onClick = {
-                            selectedBooks =
-                                if (selectedBooks.size == bookList.size) {
-                                    isSelectionModeActive = false
-                                    listOf()
-                                } else {
-                                    listOf(*bookList.toTypedArray())
-                                }
+                            if (uiState.selectedBooks.size == bookList.size) {
+                                bookSelectionViewModel.removeAllBooksFromSelection()
+                            } else {
+                                bookSelectionViewModel.addAllBooksToSelection(bookList)
+                            }
                         }
                     ) {
                         Checkbox(
-                            checked = selectedBooks.size == bookList.size,
+                            checked = uiState.selectedBooks.size == bookList.size,
                             onCheckedChange = null
                         )
                         Spacer(Modifier.width(10.dp))
                         Text(
-                            text = stringResource(R.string.selected) + selectedBooks.size.toString(),
+                            text = stringResource(R.string.selected) + uiState.selectedBooks.size.toString(),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurface
                         )
@@ -111,8 +111,8 @@ fun ResultScreen(
                             onClick = {
                                 shareSelectedBooks(
                                     activity = activity,
-                                    viewModel = viewModel,
-                                    selectedBooks = selectedBooks,
+                                    viewModel = offlineViewModel,
+                                    selectedBooks = uiState.selectedBooks,
                                     coroutineScope = coroutineScope
                                 )
                             }
@@ -146,7 +146,7 @@ fun ResultScreen(
                 columns = GridCells.Adaptive(minSize = gridCellsMinSize)
             ) {
                 items(items = bookList, key = { book -> book.id }) { book ->
-                    val isSelected = book in selectedBooks
+                    val isSelected = book in uiState.selectedBooks
 
                     Box(
                         modifier = Modifier
@@ -173,17 +173,15 @@ fun ResultScreen(
                                 )
                                 .combinedClickable(
                                     onClick = {
-                                        if (isSelectionModeActive) {
-                                            selectedBooks = selectedBooks.toggle(book)
-                                            isSelectionModeActive = selectedBooks.isNotEmpty()
+                                        if (uiState.isSelectionModeOn) {
+                                            bookSelectionViewModel.toggleBookInSelection(book)
                                         } else {
                                             onBookClick(book.id)
                                         }
                                     },
                                     onLongClick = {
-                                        if (!isSelectionModeActive) {
-                                            isSelectionModeActive = true
-                                            selectedBooks += book
+                                        if (!uiState.isSelectionModeOn) {
+                                            bookSelectionViewModel.toggleBookInSelection(book)
                                         }
                                     }
                                 )
@@ -213,14 +211,14 @@ fun ResultScreen(
                 onConfirm = {
                     Toast.makeText(
                         context,
-                        context.getString(R.string.book_s_deleted, selectedBooks.size),
+                        context.getString(R.string.book_s_deleted, uiState.selectedBooks.size),
                         Toast.LENGTH_SHORT
                     ).show()
 
                     isDialogOpen = false
-                    isSelectionModeActive = false
-                    viewModel?.deleteBooks(
-                        bookIds = selectedBooks.map { book ->
+                    bookSelectionViewModel.removeAllBooksFromSelection()
+                    offlineViewModel?.deleteBooks(
+                        bookIds = uiState.selectedBooks.map { book ->
                             book.id
                         }
                     )
@@ -245,10 +243,6 @@ fun ResultScreen(
             }
         }
     }
-}
-
-private fun List<Book>.toggle(book: Book): List<Book> {
-    return if (contains(book)) this - book else this + book
 }
 
 private fun shareSelectedBooks(

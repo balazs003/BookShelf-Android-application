@@ -11,23 +11,33 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.bookshelf.R
+import com.example.bookshelf.presentation.AppViewModelProvider
 import com.example.bookshelf.presentation.OfflineBookShelfViewModel
+import com.example.bookshelf.presentation.BookSelectionViewModel
 import com.example.bookshelf.ui.screens.states.ResultScreen
 
 @Composable
 fun SavedBooksScreen(
-    viewModel: OfflineBookShelfViewModel,
+    offlineViewModel: OfflineBookShelfViewModel,
     onBookClick: (String) -> Unit,
     onBackPressed: () -> Unit
 ) {
+    val bookSelectionViewModel: BookSelectionViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val uiState by bookSelectionViewModel.selectedBooksUiState.collectAsState()
+
     BackHandler(true) {
-        onBackPressed()
+        if (uiState.isSelectionModeOn) {
+            bookSelectionViewModel.removeAllBooksFromSelection()
+        } else {
+            onBackPressed()
+        }
     }
     Column (
         modifier = Modifier.fillMaxSize()
     ) {
-        val storedExtendedBooks by viewModel.getAllStoredBooks().collectAsState(emptyList())
+        val storedExtendedBooks by offlineViewModel.getAllStoredBooks().collectAsState(emptyList())
         val storedBooks = storedExtendedBooks.map { extendedBook ->
             extendedBook.convertToBook()
         }
@@ -44,7 +54,9 @@ fun SavedBooksScreen(
             ResultScreen(
                 bookList = storedBooks,
                 isSelectionModeAvailable = true,
-                viewModel = viewModel,
+                offlineViewModel = offlineViewModel,
+                bookSelectionViewModel = bookSelectionViewModel,
+                uiState = uiState,
                 onBookClick = onBookClick
             )
         }
