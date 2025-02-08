@@ -262,9 +262,16 @@ private fun shareSelectedBooks(
         selectedBooks.forEach { book ->
             extendedBookList.add(viewModel?.getBookById(book.id))
         }
-        SharingUtils.shareBooks(
-            activity,
-            extendedBookList
-        )
+        if (selectedBooks.size > 1) {
+            SharingUtils.shareBooks(
+                activity,
+                extendedBookList
+            )
+        } else {
+            SharingUtils.shareBook(
+                activity,
+                extendedBookList[0]
+            )
+        }
     }
 }
