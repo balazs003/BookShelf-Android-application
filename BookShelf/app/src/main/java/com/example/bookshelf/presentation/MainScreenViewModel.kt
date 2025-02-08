@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import java.util.Locale
 
 class MainScreenViewModel: ViewModel() {
     private var _mainScreenUiState = MutableStateFlow(MainScreenUiState())
@@ -18,7 +19,8 @@ class MainScreenViewModel: ViewModel() {
         _mainScreenUiState.update { currentState ->
             currentState.copy(
                 selectedPage = newPage,
-                isSearchEnabled = newPage.name == Screen.HomeScreen.route
+                isSearchEnabled = newPage.name == Screen.HomeScreen.route,
+                isSharingEnabled = Screen.BookScreen.route.startsWith(newPage.name.lowercase(Locale.getDefault()))
             )
         }
     }

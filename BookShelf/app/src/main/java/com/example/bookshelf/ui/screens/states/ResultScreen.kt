@@ -1,5 +1,7 @@
 package com.example.bookshelf.ui.screens.states
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -22,16 +24,19 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.twotone.Delete
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.twotone.Share
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,10 +48,15 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.bookshelf.R
 import com.example.bookshelf.model.Book
+import com.example.bookshelf.model.ExtendedBook
 import com.example.bookshelf.presentation.OfflineBookShelfViewModel
+import com.example.bookshelf.sharing.SharingUtils
 import com.example.bookshelf.ui.components.AppAlertDialog
 import com.example.bookshelf.ui.components.BookCard
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
+@SuppressLint("ContextCastToActivity")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ResultScreen(
@@ -59,6 +69,9 @@ fun ResultScreen(
     val gridCellsMinSize: Dp = 180.dp
 
     if (isSelectionModeAvailable) {
+        val activity = LocalContext.current as Activity
+        val coroutineScope = rememberCoroutineScope()
+
         var isDialogOpen by rememberSaveable { mutableStateOf(false) }
         var isSelectionModeActive by rememberSaveable { mutableStateOf(false) }
         var selectedBooks by rememberSaveable { mutableStateOf(listOf<Book>()) }
@@ -93,23 +106,35 @@ fun ResultScreen(
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     }
-                    TextButton(
-                        colors = ButtonDefaults.textButtonColors(
-                            contentColor = MaterialTheme.colorScheme.error
-                        ),
-                        onClick = {
-                            isDialogOpen = true
+                    Row {
+                        IconButton(
+                            onClick = {
+                                shareSelectedBooks(
+                                    activity = activity,
+                                    viewModel = viewModel,
+                                    selectedBooks = selectedBooks,
+                                    coroutineScope = coroutineScope
+                                )
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.TwoTone.Share,
+                                contentDescription = ""
+                            )
                         }
-                    ) {
-                        Text(
-                            text = stringResource(R.string.delete),
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                        Spacer(Modifier.width(5.dp))
-                        Icon(
-                            imageVector = Icons.TwoTone.Delete,
-                            contentDescription = ""
-                        )
+                        IconButton(
+                            colors = IconButtonDefaults.iconButtonColors(
+                                contentColor = MaterialTheme.colorScheme.error
+                            ),
+                            onClick = {
+                                isDialogOpen = true
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.TwoTone.Delete,
+                                contentDescription = ""
+                            )
+                        }
                     }
                 }
             }
@@ -224,4 +249,22 @@ fun ResultScreen(
 
 private fun List<Book>.toggle(book: Book): List<Book> {
     return if (contains(book)) this - book else this + book
+}
+
+private fun shareSelectedBooks(
+    activity: Activity,
+    viewModel: OfflineBookShelfViewModel?,
+    selectedBooks: List<Book>,
+    coroutineScope: CoroutineScope
+) {
+    coroutineScope.launch {
+        val extendedBookList = mutableListOf<ExtendedBook?>()
+        selectedBooks.forEach { book ->
+            extendedBookList.add(viewModel?.getBookById(book.id))
+        }
+        SharingUtils.shareBooks(
+            activity,
+            extendedBookList
+        )
+    }
 }

@@ -8,8 +8,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 sealed class Screen(val route: String) {
     data object HomeScreen: Screen(route = "home")
     data object SavedScreen: Screen(route = "saved")
-    data object BookScreen: Screen(route = "book/{id}") {
-        fun passBookId(bookId: String) = "book/$bookId"
+    data object BookScreen: Screen(route = "book details/{id}") {
+        fun passBookId(bookId: String) = "book details/$bookId"
         object Args {
             const val id = "id"
         }

@@ -1,8 +1,9 @@
 package com.example.bookshelf.ui.components
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -11,6 +12,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.twotone.Share
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -25,10 +27,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.bookshelf.R
+import com.example.bookshelf.data.MainScreenUiState
+import com.example.bookshelf.model.ExtendedBook
+import com.example.bookshelf.sharing.SharingUtils
 
+@SuppressLint("ContextCastToActivity")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookShelfTopAppBar(
@@ -36,12 +43,14 @@ fun BookShelfTopAppBar(
     title: String,
     enableNavigateBack: Boolean,
     onNavigateBack: () -> Unit,
-    enableSearch: Boolean,
+    selectedBook: ExtendedBook?,
+    mainScreenUiState: MainScreenUiState,
     searchInput: String,
     onInputChange: (String) -> Unit,
     onInputClear: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val activity = LocalContext.current as Activity
     Column (
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -65,7 +74,7 @@ fun BookShelfTopAppBar(
                 }
             },
             actions = {
-                if (enableSearch) {
+                if (mainScreenUiState.isSearchEnabled) {
                     IconButton(
                         onClick = { showSearchField = !showSearchField }
                     ) {
@@ -82,10 +91,25 @@ fun BookShelfTopAppBar(
                         }
                     }
                 }
+                if (mainScreenUiState.isSharingEnabled && selectedBook != null) {
+                    IconButton(
+                        onClick = {
+                            SharingUtils.shareBook(
+                                activity = activity,
+                                book = selectedBook
+                            )
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.TwoTone.Share,
+                            contentDescription = ""
+                        )
+                    }
+                }
             },
             modifier = modifier
         )
-        AnimatedVisibility(visible = showSearchField && enableSearch) {
+        AnimatedVisibility(visible = showSearchField && mainScreenUiState.isSearchEnabled) {
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()

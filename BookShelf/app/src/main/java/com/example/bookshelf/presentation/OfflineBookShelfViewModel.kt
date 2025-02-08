@@ -23,4 +23,7 @@ class OfflineBookShelfViewModel(
             }
         }
     }
+
+    suspend fun getBookById(bookId: String): ExtendedBook? =
+        offlineBookRepository.getStoredBookById(bookId)
 }

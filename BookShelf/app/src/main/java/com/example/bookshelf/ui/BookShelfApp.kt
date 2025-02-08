@@ -116,7 +116,8 @@ fun BookShelfApp() {
                 onNavigateBack = {
                     handleBackPressed(mainScreenViewModel, navController)
                 },
-                enableSearch = mainScreenUiState.isSearchEnabled,
+                selectedBook = selectedBookState.book,
+                mainScreenUiState = mainScreenUiState,
                 searchInput = searchInput,
                 onInputChange = {
                     searchInput = it
