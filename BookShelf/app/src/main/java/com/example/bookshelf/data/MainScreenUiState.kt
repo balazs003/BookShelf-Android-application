@@ -1,10 +1,9 @@
 package com.example.bookshelf.data
 
-import com.example.bookshelf.ui.screens.Page
-import com.example.bookshelf.ui.screens.Pages
+import com.example.bookshelf.ui.screens.Screen
 
 data class MainScreenUiState(
-    val selectedPage: Page = Pages.homePage,
+    val selectedScreen: Screen = Screen.HomeScreen,
     val isSearchEnabled: Boolean = true,
     val isSharingEnabled: Boolean = false
 )

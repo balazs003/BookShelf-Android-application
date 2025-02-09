@@ -63,10 +63,9 @@ import com.example.bookshelf.ui.components.BookShelfBottomAppBar
 import com.example.bookshelf.ui.components.BookShelfTopAppBar
 import com.example.bookshelf.ui.screens.BookScreen
 import com.example.bookshelf.ui.screens.HomeScreen
-import com.example.bookshelf.ui.screens.Page
-import com.example.bookshelf.ui.screens.Pages
 import com.example.bookshelf.ui.screens.SavedBooksScreen
 import com.example.bookshelf.ui.screens.Screen
+import com.example.bookshelf.ui.screens.ScreenListProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -111,7 +110,7 @@ fun BookShelfApp() {
         topBar = {
             BookShelfTopAppBar(
                 scrollBehavior = topAppBarScrollBehavior,
-                title = mainScreenUiState.selectedPage.name.replaceFirstChar { it.uppercaseChar() },
+                title = mainScreenUiState.selectedScreen.title,
                 enableNavigateBack = mainScreenViewModel.canNavigateBack(backStackEntry?.destination?.route),
                 onNavigateBack = {
                     handleBackPressed(mainScreenViewModel, navController)
@@ -132,11 +131,11 @@ fun BookShelfApp() {
         },
         bottomBar = {
             BookShelfBottomAppBar(
-                selectedPage = mainScreenUiState.selectedPage,
-                onPageSelect = {
-                    navController.popBackStack(it.name, false)
-                    navController.navigate(it.name)
-                    mainScreenViewModel.changeSelectedPage(it)
+                selectedScreen = mainScreenUiState.selectedScreen,
+                onScreenSelect = {
+                    navController.popBackStack(it.route, false)
+                    navController.navigate(it.route)
+                    mainScreenViewModel.changeSelectedScreen(it)
                 }
             )
         },
@@ -213,12 +212,11 @@ fun BookShelfApp() {
                 startDestination = Screen.HomeScreen.route
             ) {
                 composable(Screen.HomeScreen.route) {
-                    val title = stringResource(R.string.book_page_title)
                     HomeScreen(
                         viewModel = onlineBookShelfViewModel,
                         retryAction = { onlineBookShelfViewModel.getBooksFromNetwork(searchInput) },
                         onBookClick = {
-                            onBookClick(needsNetwork = true, navController, bookPageViewModel, mainScreenViewModel, scope, scrollState, title, bookId = it)
+                            onBookClick(needsNetwork = true, navController, bookPageViewModel, mainScreenViewModel, scope, scrollState, bookId = it)
                         },
                         onBackClick = {
                             isDialogOpen = !isDialogOpen
@@ -226,14 +224,13 @@ fun BookShelfApp() {
                     )
                 }
                 composable(route = Screen.SavedScreen.route) {
-                    val title = stringResource(R.string.book_page_title)
                     SavedBooksScreen(
                         offlineViewModel = offlineBookShelfViewModel,
                         onBookClick = {
-                            onBookClick(needsNetwork = false, navController, bookPageViewModel, mainScreenViewModel, scope, scrollState, title, bookId = it)
+                            onBookClick(needsNetwork = false, navController, bookPageViewModel, mainScreenViewModel, scope, scrollState, bookId = it)
                         },
                         onBackPressed = {
-                            mainScreenViewModel.changeSelectedPage(Pages.homePage)
+                            mainScreenViewModel.changeSelectedScreen(Screen.HomeScreen)
                             navController.popBackStack(Screen.HomeScreen.route, false)
                         }
                     )
@@ -280,9 +277,9 @@ private fun handleBackPressed(
     navController: NavHostController
 ) {
     val route = navController.previousBackStackEntry?.destination?.route
-    val page = Pages.pageList.find { it.name == route }
+    val screen = ScreenListProvider.allScreens.find { it.route == route }
     navController.navigateUp()
-    page?.let { mainScreenViewModel.changeSelectedPage(page) }
+    screen?.let { mainScreenViewModel.changeSelectedScreen(screen) }
 }
 
 private fun onBookClick(
@@ -292,7 +289,6 @@ private fun onBookClick(
     mainScreenViewModel: MainScreenViewModel,
     scope: CoroutineScope,
     scrollState: ScrollState,
-    title: String,
     bookId: String
 ) {
     navController.navigate(Screen.BookScreen.passBookId(bookId))
@@ -301,7 +297,7 @@ private fun onBookClick(
     } else {
         bookPageViewModel.getBookDetailsFromStorage(bookId)
     }
-    mainScreenViewModel.changeSelectedPage(Page(name = title))
+    mainScreenViewModel.changeSelectedScreen(Screen.BookScreen)
     scope.launch {
         scrollState.scrollTo(0)
     }
@@ -324,7 +320,7 @@ private suspend fun showSnackBar(
     when (result) {
         SnackbarResult.ActionPerformed -> {
             if (showAction) {
-                mainScreenViewModel?.changeSelectedPage(Pages.savedPage)
+                mainScreenViewModel?.changeSelectedScreen(Screen.SavedScreen)
                 navController?.navigate(Screen.SavedScreen.route)
             }
         }

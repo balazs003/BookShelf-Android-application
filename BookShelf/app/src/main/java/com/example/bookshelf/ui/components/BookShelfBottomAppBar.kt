@@ -11,13 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import com.example.bookshelf.ui.screens.Page
-import com.example.bookshelf.ui.screens.Pages
+import com.example.bookshelf.ui.screens.Screen
+import com.example.bookshelf.ui.screens.ScreenListProvider
 
 @Composable
 fun BookShelfBottomAppBar(
-    selectedPage: Page,
-    onPageSelect: (Page) -> Unit,
+    selectedScreen: Screen,
+    onScreenSelect: (Screen) -> Unit,
     modifier: Modifier = Modifier
 ) {
     BottomAppBar(
@@ -26,20 +26,20 @@ fun BookShelfBottomAppBar(
         NavigationBar(
             containerColor = Color.Transparent
         ) {
-            Pages.pageList.forEach { page ->
+            ScreenListProvider.bottomNavBarScreens.forEach { screen ->
                 NavigationBarItem(
-                    selected = page == selectedPage,
+                    selected = screen == selectedScreen,
                     onClick = {
-                        onPageSelect(page)
+                        onScreenSelect(screen)
                     },
                     icon = {
-                        Icon(imageVector = page.icon, contentDescription = "")
+                        Icon(imageVector = screen.icon, contentDescription = "")
                     },
                     label = {
                         Text(
-                            text = page.name.replaceFirstChar { it.uppercaseChar() },
-                            fontWeight = if (page == selectedPage) FontWeight.Bold else FontWeight.Normal,
-                            color = if (page == selectedPage) MaterialTheme.colorScheme.primary else Color.Unspecified
+                            text = screen.route.replaceFirstChar { it.uppercaseChar() },
+                            fontWeight = if (screen == selectedScreen) FontWeight.Bold else FontWeight.Normal,
+                            color = if (screen == selectedScreen) MaterialTheme.colorScheme.primary else Color.Unspecified
                         )
                     },
                     colors = NavigationBarItemDefaults.colors(
