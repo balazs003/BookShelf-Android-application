@@ -3,6 +3,7 @@ package com.example.bookshelf.presentation
 import androidx.lifecycle.ViewModel
 import com.example.bookshelf.data.SelectedBooksUiState
 import com.example.bookshelf.model.Book
+import com.example.bookshelf.model.ExtendedBook
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +22,7 @@ class BookSelectionViewModel: ViewModel() {
         }
     }
 
-    fun addAllBooksToSelection(books: List<Book>) {
+    fun addAllBooksToSelection(books: List<ExtendedBook>) {
         _selectedBooksUiState.update { currentState ->
             currentState.copy(
                 selectedBooks = books
@@ -29,7 +30,7 @@ class BookSelectionViewModel: ViewModel() {
         }
     }
 
-    fun toggleBookInSelection(book: Book) {
+    fun toggleBookInSelection(book: ExtendedBook) {
         _selectedBooksUiState.update { currentState ->
             if (_selectedBooksUiState.value.selectedBooks.contains(book)) {
                 currentState.copy(

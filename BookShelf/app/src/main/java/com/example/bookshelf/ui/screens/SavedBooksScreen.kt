@@ -16,7 +16,7 @@ import com.example.bookshelf.R
 import com.example.bookshelf.presentation.AppViewModelProvider
 import com.example.bookshelf.presentation.OfflineBookShelfViewModel
 import com.example.bookshelf.presentation.BookSelectionViewModel
-import com.example.bookshelf.ui.screens.states.ResultScreen
+import com.example.bookshelf.ui.screens.states.SavedPageResultScreen
 
 @Composable
 fun SavedBooksScreen(
@@ -37,10 +37,7 @@ fun SavedBooksScreen(
     Column (
         modifier = Modifier.fillMaxSize()
     ) {
-        val storedExtendedBooks by offlineViewModel.getAllStoredBooks().collectAsState(emptyList())
-        val storedBooks = storedExtendedBooks.map { extendedBook ->
-            extendedBook.convertToBook()
-        }
+        val storedBooks by offlineViewModel.getAllStoredBooks().collectAsState(emptyList())
 
         if (storedBooks.isEmpty()) {
             Column (
@@ -51,9 +48,8 @@ fun SavedBooksScreen(
                 Text(text = stringResource(R.string.save_books_prompt))
             }
         } else {
-            ResultScreen(
+            SavedPageResultScreen(
                 bookList = storedBooks,
-                isSelectionModeAvailable = true,
                 offlineViewModel = offlineViewModel,
                 bookSelectionViewModel = bookSelectionViewModel,
                 uiState = uiState,

@@ -12,7 +12,7 @@ import com.example.bookshelf.ui.screens.states.ErrorScreen
 import com.example.bookshelf.ui.screens.states.InitialScreen
 import com.example.bookshelf.ui.screens.states.LoadingScreen
 import com.example.bookshelf.ui.screens.states.NoResultScreen
-import com.example.bookshelf.ui.screens.states.ResultScreen
+import com.example.bookshelf.ui.screens.states.HomePageResultScreen
 
 @Composable
 fun HomeScreen(
@@ -49,7 +49,7 @@ fun HomeScreen(
 
                 is BookShelfUiState.Success ->
                     Column {
-                        ResultScreen(
+                        HomePageResultScreen(
                             bookList = targetState.bookList,
                             onBookClick = onBookClick
                         )
