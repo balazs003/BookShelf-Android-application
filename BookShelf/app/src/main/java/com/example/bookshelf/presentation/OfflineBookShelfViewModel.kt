@@ -2,7 +2,7 @@ package com.example.bookshelf.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.bookshelf.data.OfflineBookRepository
+import com.example.bookshelf.data.repositories.OfflineBookRepository
 import com.example.bookshelf.model.ExtendedBook
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -23,7 +23,4 @@ class OfflineBookShelfViewModel(
             }
         }
     }
-
-    suspend fun getBookById(bookId: String): ExtendedBook? =
-        offlineBookRepository.getStoredBookById(bookId)
 }

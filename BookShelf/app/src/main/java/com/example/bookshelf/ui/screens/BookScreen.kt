@@ -3,7 +3,7 @@ package com.example.bookshelf.ui.screens
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ScrollState
 import androidx.compose.runtime.Composable
-import com.example.bookshelf.presentation.BookPageUiState
+import com.example.bookshelf.data.uistates.BookPageUiState
 import com.example.bookshelf.ui.screens.states.BookPageResultScreen
 import com.example.bookshelf.ui.screens.states.ErrorScreen
 import com.example.bookshelf.ui.screens.states.LoadingScreen

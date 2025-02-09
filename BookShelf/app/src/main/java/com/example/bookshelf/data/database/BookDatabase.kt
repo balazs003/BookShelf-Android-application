@@ -5,7 +5,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.bookshelf.data.Converters
 import com.example.bookshelf.model.ExtendedBook
 
 @Database(entities = [ExtendedBook::class], version = 1)

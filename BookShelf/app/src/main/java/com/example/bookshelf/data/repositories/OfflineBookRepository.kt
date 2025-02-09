@@ -1,4 +1,4 @@
-package com.example.bookshelf.data
+package com.example.bookshelf.data.repositories
 
 import com.example.bookshelf.data.database.BookDao
 import com.example.bookshelf.model.ExtendedBook

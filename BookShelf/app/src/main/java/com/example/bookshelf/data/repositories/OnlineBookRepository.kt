@@ -1,4 +1,4 @@
-package com.example.bookshelf.data
+package com.example.bookshelf.data.repositories
 
 import androidx.annotation.VisibleForTesting
 import com.example.bookshelf.model.Book

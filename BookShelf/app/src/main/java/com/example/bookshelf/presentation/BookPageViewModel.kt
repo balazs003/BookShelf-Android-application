@@ -5,9 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.bookshelf.data.OfflineBookRepository
-import com.example.bookshelf.data.OnlineBookRepository
-import com.example.bookshelf.data.SelectedBookState
+import com.example.bookshelf.data.uistates.BookPageUiState
+import com.example.bookshelf.data.repositories.OfflineBookRepository
+import com.example.bookshelf.data.repositories.OnlineBookRepository
+import com.example.bookshelf.data.uistates.SelectedBookState
 import com.example.bookshelf.model.ExtendedBook
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,12 +17,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
-
-sealed interface BookPageUiState {
-    data class Success(val book: ExtendedBook): BookPageUiState
-    data class Error(val errorMessage: String): BookPageUiState
-    data object Loading: BookPageUiState
-}
 
 class BookPageViewModel(
     private val onlineBookRepository: OnlineBookRepository,

@@ -1,4 +1,4 @@
-package com.example.bookshelf.data
+package com.example.bookshelf.data.database
 
 import androidx.room.TypeConverter
 

@@ -5,7 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.bookshelf.data.OnlineBookRepository
+import com.example.bookshelf.data.uistates.HomePageUiState
+import com.example.bookshelf.data.repositories.OnlineBookRepository
 import com.example.bookshelf.model.Book
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -16,20 +17,13 @@ import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
 
-sealed interface BookShelfUiState {
-    data class Success(var bookList: List<Book>): BookShelfUiState
-    data object NoResult: BookShelfUiState
-    data class Error(val errorMessage: String): BookShelfUiState
-    data object Loading: BookShelfUiState
-    data object Initial: BookShelfUiState
-}
-
 class OnlineBookShelfViewModel(
     private val onlineBookRepository: OnlineBookRepository
 ): ViewModel() {
 
-    private var _bookShelfUiState: MutableStateFlow<BookShelfUiState> = MutableStateFlow(BookShelfUiState.Loading)
-    val bookShelfUiState: StateFlow<BookShelfUiState> = _bookShelfUiState.asStateFlow()
+    private var _homePageUiState: MutableStateFlow<HomePageUiState> = MutableStateFlow(
+        HomePageUiState.Loading)
+    val homePageUiState: StateFlow<HomePageUiState> = _homePageUiState.asStateFlow()
 
     private var searchJob: Job? = null
     private val defaultQueryString = ('a'..'z').random().toString()
@@ -50,22 +44,22 @@ class OnlineBookShelfViewModel(
             delay(500)
             filterGroups.deleteFilters()
             try {
-                _bookShelfUiState.value = BookShelfUiState.Loading
+                _homePageUiState.value = HomePageUiState.Loading
                 if (!isQueryValid(modifiedQueryString)) {
-                    _bookShelfUiState.value = BookShelfUiState.Initial
+                    _homePageUiState.value = HomePageUiState.Initial
                 } else {
                     val books = onlineBookRepository.getSearchResults(modifiedQueryString)
-                    _bookShelfUiState.value = if (books.isNotEmpty()) {
+                    _homePageUiState.value = if (books.isNotEmpty()) {
                         loadFilters(books)
-                        BookShelfUiState.Success(books)
+                        HomePageUiState.Success(books)
                     } else {
-                        BookShelfUiState.NoResult
+                        HomePageUiState.NoResult
                     }
                 }
             } catch (e: IOException) {
-                _bookShelfUiState.value = BookShelfUiState.Error(e.message ?: "IOException")
+                _homePageUiState.value = HomePageUiState.Error(e.message ?: "IOException")
             } catch (e: HttpException) {
-                _bookShelfUiState.value = BookShelfUiState.Error(e.message ?: "HttpException")
+                _homePageUiState.value = HomePageUiState.Error(e.message ?: "HttpException")
             }
         }
     }
@@ -84,8 +78,8 @@ class OnlineBookShelfViewModel(
     }
 
     private fun updateUiState(filteredBooks: List<Book>) {
-        _bookShelfUiState.value = if (filteredBooks.isEmpty()) BookShelfUiState.NoResult
-        else BookShelfUiState.Success(filteredBooks)
+        _homePageUiState.value = if (filteredBooks.isEmpty()) HomePageUiState.NoResult
+        else HomePageUiState.Success(filteredBooks)
     }
 
     private fun isQueryValid(queryString: String): Boolean {

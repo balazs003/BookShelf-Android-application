@@ -46,7 +46,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.bookshelf.R
-import com.example.bookshelf.data.SelectedBooksUiState
+import com.example.bookshelf.data.uistates.SelectedBooksUiState
 import com.example.bookshelf.model.ExtendedBook
 import com.example.bookshelf.presentation.BookSelectionViewModel
 import com.example.bookshelf.presentation.OfflineBookShelfViewModel

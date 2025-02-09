@@ -1,4 +1,4 @@
-package com.example.bookshelf.data
+package com.example.bookshelf.data.uistates
 
 import com.example.bookshelf.ui.screens.Screen
 

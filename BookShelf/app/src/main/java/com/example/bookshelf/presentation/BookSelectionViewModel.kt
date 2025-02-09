@@ -1,8 +1,7 @@
 package com.example.bookshelf.presentation
 
 import androidx.lifecycle.ViewModel
-import com.example.bookshelf.data.SelectedBooksUiState
-import com.example.bookshelf.model.Book
+import com.example.bookshelf.data.uistates.SelectedBooksUiState
 import com.example.bookshelf.model.ExtendedBook
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

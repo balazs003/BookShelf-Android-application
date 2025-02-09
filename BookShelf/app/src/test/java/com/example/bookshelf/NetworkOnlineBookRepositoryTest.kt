@@ -1,6 +1,6 @@
 package com.example.bookshelf
 
-import com.example.bookshelf.data.NetworkOnlineBookRepository
+import com.example.bookshelf.data.repositories.NetworkOnlineBookRepository
 import com.example.bookshelf.fake.FakeApiService
 import com.example.bookshelf.fake.FakeDataSource
 import com.example.bookshelf.network.GoogleBooksApiService

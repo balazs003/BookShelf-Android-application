@@ -5,7 +5,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import com.example.bookshelf.presentation.BookShelfUiState
+import com.example.bookshelf.data.uistates.HomePageUiState
 import com.example.bookshelf.presentation.OnlineBookShelfViewModel
 import com.example.bookshelf.ui.components.ChipContainer
 import com.example.bookshelf.ui.screens.states.ErrorScreen
@@ -29,25 +29,25 @@ fun HomeScreen(
             viewModel = viewModel
         )
         AnimatedContent(
-            targetState = viewModel.bookShelfUiState.collectAsState().value
+            targetState = viewModel.homePageUiState.collectAsState().value
         ) { targetState ->
             when (targetState) {
-                is BookShelfUiState.Initial ->
+                is HomePageUiState.Initial ->
                     InitialScreen()
 
-                is BookShelfUiState.Loading ->
+                is HomePageUiState.Loading ->
                     LoadingScreen()
 
-                is BookShelfUiState.NoResult ->
+                is HomePageUiState.NoResult ->
                     NoResultScreen()
 
-                is BookShelfUiState.Error ->
+                is HomePageUiState.Error ->
                     ErrorScreen(
                         targetState.errorMessage,
                         retryAction
                     )
 
-                is BookShelfUiState.Success ->
+                is HomePageUiState.Success ->
                     Column {
                         HomePageResultScreen(
                             bookList = targetState.bookList,

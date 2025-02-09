@@ -2,6 +2,10 @@ package com.example.bookshelf.data
 
 import android.content.Context
 import com.example.bookshelf.data.database.BookDatabase
+import com.example.bookshelf.data.repositories.DbOfflineBookRepository
+import com.example.bookshelf.data.repositories.NetworkOnlineBookRepository
+import com.example.bookshelf.data.repositories.OfflineBookRepository
+import com.example.bookshelf.data.repositories.OnlineBookRepository
 import com.example.bookshelf.network.GoogleBooksApiService
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
