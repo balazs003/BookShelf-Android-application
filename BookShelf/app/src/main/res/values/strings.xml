@@ -40,4 +40,9 @@
     <string name="do_you_really_want_to_delete_the_selected_books">Do you really want to delete the selected books?</string>
     <string name="delete">Delete</string>
     <string name="book_s_deleted">%1$d book(s) deleted</string>
+    <string name="share_pdf">Share PDF</string>
+    <string name="scan_pdf">Scan PDF</string>
+    <string name="pdf_name">scan.pdf</string>
+    <string name="scan_another_book">Scan another book</string>
+    <string name="pages_scanned">%1$s pages scanned</string>
 </resources>

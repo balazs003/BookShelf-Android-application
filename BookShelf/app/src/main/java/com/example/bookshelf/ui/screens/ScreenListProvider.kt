@@ -1,6 +1,7 @@
 package com.example.bookshelf.ui.screens
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -19,9 +20,10 @@ sealed class Screen(
             const val id = "id"
         }
     }
+    data object ScannerScreen: Screen(route = "scan", title = "Scan books", icon = Icons.Default.CameraAlt)
 }
 
 object ScreenListProvider {
-    val allScreens = listOf(Screen.HomeScreen, SavedScreen, Screen.BookScreen)
-    val bottomNavBarScreens = listOf(Screen.HomeScreen, SavedScreen)
+    val allScreens = listOf(Screen.HomeScreen, Screen.SavedScreen, Screen.BookScreen, Screen.ScannerScreen)
+    val bottomNavBarScreens = listOf(Screen.HomeScreen, SavedScreen, Screen.ScannerScreen)
 }

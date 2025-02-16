@@ -58,12 +58,14 @@ import com.example.bookshelf.presentation.BookPageViewModel
 import com.example.bookshelf.presentation.MainScreenViewModel
 import com.example.bookshelf.presentation.OfflineBookShelfViewModel
 import com.example.bookshelf.presentation.OnlineBookShelfViewModel
+import com.example.bookshelf.presentation.ScannerViewModel
 import com.example.bookshelf.ui.components.AppAlertDialog
 import com.example.bookshelf.ui.components.BookShelfBottomAppBar
 import com.example.bookshelf.ui.components.BookShelfTopAppBar
 import com.example.bookshelf.ui.screens.BookScreen
 import com.example.bookshelf.ui.screens.HomeScreen
 import com.example.bookshelf.ui.screens.SavedBooksScreen
+import com.example.bookshelf.ui.screens.ScannerScreen
 import com.example.bookshelf.ui.screens.Screen
 import com.example.bookshelf.ui.screens.ScreenListProvider
 import kotlinx.coroutines.CoroutineScope
@@ -83,6 +85,7 @@ fun BookShelfApp() {
     val offlineBookShelfViewModel: OfflineBookShelfViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val bookPageViewModel: BookPageViewModel = viewModel(factory = AppViewModelProvider.Factory)
     val mainScreenViewModel: MainScreenViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    val scannerViewModel: ScannerViewModel = viewModel(factory = AppViewModelProvider.Factory)
 
     val mainScreenUiState by mainScreenViewModel.mainScreenUiState.collectAsState()
     val selectedBookState by bookPageViewModel.selectedBookState.collectAsState()
@@ -253,6 +256,9 @@ fun BookShelfApp() {
                             handleBackPressed(mainScreenViewModel, navController)
                         }
                     )
+                }
+                composable(route = Screen.ScannerScreen.route) {
+                    ScannerScreen(scannerViewModel)
                 }
             }
         }

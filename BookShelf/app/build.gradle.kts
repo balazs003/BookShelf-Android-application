@@ -74,6 +74,12 @@ dependencies {
     implementation(libs.androidx.ui.text.google.fonts)
     ksp("androidx.room:room-compiler:${rootProject.extra["room_version"]}")
 
+    //Extended material icons
+    implementation(libs.androidx.material.icons.extended)
+
+    //ML Kit document scanner
+    implementation(libs.play.services.mlkit.document.scanner)
+
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)

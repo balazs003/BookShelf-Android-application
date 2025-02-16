@@ -2,7 +2,11 @@ package com.example.bookshelf.sharing
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
+import androidx.core.content.FileProvider
 import com.example.bookshelf.model.ExtendedBook
+import java.io.File
 
 object SharingUtils {
     fun shareBook(activity: Activity, book: ExtendedBook?) {
@@ -31,6 +35,28 @@ object SharingUtils {
         }
         val bookInfo = builder.toString()
         createIntent(activity, bookInfo)
+    }
+
+    fun sharePdf(activity: Activity) {
+        val pdfFile = File(activity.filesDir, "scan.pdf")
+        if (!pdfFile.exists()) {
+            Toast.makeText(activity, "No PDF to share", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val uri: Uri = FileProvider.getUriForFile(
+            activity,
+            "${activity.packageName}.provider",
+            pdfFile
+        )
+
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "application/pdf"
+            putExtra(Intent.EXTRA_STREAM, uri)
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+
+        activity.startActivity(Intent.createChooser(shareIntent, "Share PDF"))
     }
 
     private fun createIntent(activity: Activity, text: String) {

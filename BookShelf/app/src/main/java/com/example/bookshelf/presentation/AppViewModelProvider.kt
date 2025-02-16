@@ -29,5 +29,8 @@ object AppViewModelProvider {
         initializer {
             BookSelectionViewModel()
         }
+        initializer {
+            ScannerViewModel()
+        }
     }
 }
