@@ -258,7 +258,12 @@ fun BookShelfApp() {
                     )
                 }
                 composable(route = Screen.ScannerScreen.route) {
-                    ScannerScreen(scannerViewModel)
+                    ScannerScreen(
+                        viewModel = scannerViewModel,
+                        onBackPressed = {
+                            handleBackPressed(mainScreenViewModel, navController)
+                        }
+                    )
                 }
             }
         }

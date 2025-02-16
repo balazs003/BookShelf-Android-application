@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -53,8 +54,13 @@ import java.io.FileOutputStream
 
 @Composable
 fun ScannerScreen(
-    viewModel: ScannerViewModel
+    viewModel: ScannerViewModel,
+    onBackPressed: () -> Unit
 ) {
+    BackHandler(true) {
+        onBackPressed()
+    }
+
     val uiState by viewModel.scannerUiState.collectAsState()
 
     val activity = LocalActivity.current
