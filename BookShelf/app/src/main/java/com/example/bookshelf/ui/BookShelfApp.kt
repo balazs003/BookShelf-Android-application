@@ -261,7 +261,7 @@ fun BookShelfApp() {
                     ScannerScreen(
                         viewModel = scannerViewModel,
                         onBackPressed = {
-                            handleBackPressed(mainScreenViewModel, navController)
+                            mainScreenViewModel.changeSelectedScreen(Screen.HomeScreen)
                             navController.popBackStack(Screen.HomeScreen.route, false)
                         }
                     )
