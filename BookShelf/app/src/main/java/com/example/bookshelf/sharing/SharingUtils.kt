@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
 import androidx.core.content.FileProvider
+import com.example.bookshelf.R
 import com.example.bookshelf.model.ExtendedBook
 import java.io.File
 
@@ -38,7 +39,7 @@ object SharingUtils {
     }
 
     fun sharePdf(activity: Activity) {
-        val pdfFile = File(activity.filesDir, "scan.pdf")
+        val pdfFile = File(activity.filesDir, activity.getString(R.string.pdf_name))
         if (!pdfFile.exists()) {
             Toast.makeText(activity, "No PDF to share", Toast.LENGTH_SHORT).show()
             return

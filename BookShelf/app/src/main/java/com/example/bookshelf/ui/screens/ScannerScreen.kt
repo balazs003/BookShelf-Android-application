@@ -28,7 +28,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -50,7 +49,6 @@ import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.SCANNER
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
 import java.io.File
-import java.io.FileOutputStream
 
 @Composable
 fun ScannerScreen(
@@ -80,14 +78,7 @@ fun ScannerScreen(
             if (it.resultCode == RESULT_OK) {
                 val result = GmsDocumentScanningResult.fromActivityResultIntent(it.data)
                 viewModel.setImageUris(result)
-
-                result?.pdf?.let { pdf ->
-                    val stream = FileOutputStream(File(activity?.filesDir,
-                        context.getString(R.string.pdf_name)))
-                    activity?.contentResolver?.openInputStream(pdf.uri)?.use {
-                        it.copyTo(stream)
-                    }
-                }
+                viewModel.savePdfToInternalStorage(result, activity, context)
             }
         }
     )
